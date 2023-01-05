@@ -1,0 +1,75 @@
+.Search_box_wrap{
+    height: calc(100vh - 110px);
+    width: 350px;
+    margin-top: 110px;
+    background-color: #3E447B;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.Search_box_title{
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+
+.Search_box_title h3{
+    text-align: center;
+    padding: 10px;
+    margin: 30px auto 0 auto;
+    color: white;
+    font-size: 30px;
+}
+
+#startLoc{
+    width: 80%;
+    height: 35px;
+    font-size: 15px;
+    margin: 10px auto 0 auto;
+    border-radius: 10px;
+    border: 0;
+    padding: 0 10px;
+}
+
+.SearchBtWrap{
+    width: 86%;
+    margin: 15px auto 0 auto;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#searchStartLocBt{
+    width: 80px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #D9D9D9;
+    border: 0;
+    border-radius: 10px;
+    letter-spacing: 2px;
+    cursor: pointer;
+}
+
+#folderBoxTrue{
+    position: absolute;
+    left: 350px;
+    top: 10px;
+    cursor: pointer;
+}
+
+#folderBoxFalse{
+    position: absolute;
+    left: 0;
+    top: 10px;
+    cursor: pointer;
+}
+
+#underBar{
+    width: 90%;
+    margin: 15px auto 0 auto;
+    height: 0.7px;
+    background-color: white;
+}
