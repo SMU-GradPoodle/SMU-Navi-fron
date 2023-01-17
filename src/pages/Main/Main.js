@@ -12,7 +12,7 @@ export default function Main() {
 
 
     return(
-        <div>
+        <div className={"Main_wrap"}>
             <MainLogo />
             <div className={"Main_body_wrap"} style={{backgroundImage: `url(${MainBack})` }}>
                 <NavBar />
