@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import smuLogo from './../../img/smuLogo.png';
 import './Footer.css';
 

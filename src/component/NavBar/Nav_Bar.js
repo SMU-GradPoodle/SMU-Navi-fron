@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './Nav_Bar.css';
 
 export default function Nav_Bar() {
