@@ -1,13 +1,16 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import MainLogo from './../../component/MainLogo/Main_Logo';
-import SearchBox from './../../component/SearchBox/Search_Box';
 import NavBar from './../../component/NavBar/Nav_Bar';
 import Footer from './../../component/Footer/Footer';
 import MainBack from './../../img/schoolBackGround.png';
 import noticeIcon from './../../img/확성기.png';
 import './Main.css';
+import Search from './../../component/SearchPlaces/Search';
 
 export default function Main() {
+
+
+
     return(
         <div>
             <MainLogo />
@@ -20,7 +23,7 @@ export default function Main() {
                     </div>
                     <div id={"MainBodySearch"}>
                         <p>빠른 길 찾기</p>
-                        <input id={"inputAddress"} type={"text"} />
+                        <Search />
                     </div>
                     <div id={"numberAccident"}>
                         <div id={"demonNumber"}>
@@ -32,8 +35,10 @@ export default function Main() {
                             <div>0 건</div>
                         </div>
                     </div>
+
                 </div>
             </div>
+
             <Footer />
         </div>
     )
