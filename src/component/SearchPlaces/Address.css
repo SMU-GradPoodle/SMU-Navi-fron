@@ -1,20 +1,36 @@
 
 #list-wrapper{
     display: inline-block;
+    position: relative;
 }
 
 #result-list{
-    background-color: floralwhite;
-    opacity: 0.8;
-    width: 300px;
+    background-color: silver;
+    opacity: 1;
+    width: 320px;
     height: 300px;
     overflow: auto;
     text-align: center;
     display: none;
+    position: absolute;
+    right: -5px;
+    top: 13px;
+}
+
+#road_list_box{
+    padding-bottom: 10px;
+}
+
+#road_list_box h4{
+    margin: 15px 0 10px 0;
 }
 
 div,span{
-    margin-bottom: -5px;
+    cursor: pointer;
 }
+
+/*#road_address_name{*/
+/*    font-size: 20px;*/
+/*}*/
 
 

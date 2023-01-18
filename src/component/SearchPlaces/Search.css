@@ -2,23 +2,26 @@
     padding: 0px 15px;
     font-size: 20px;
     border: 0;
-    border-radius: 15px;
+    border-radius: 10px;
     height: 35px;
-    width: 90%;
+    width: 100%;
 }
+
 #btnSub{
     margin-left: -35px;
-    padding-bottom: 9px;
+    margin-bottom: 10px;
     width: 30px;
-    height: 30px;
+    height: 25px;
     background-image: url("./../../img/searchIcon.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: 20px;
     background-color: rgba(255,244,251,0);
-    border: ;
 }
 
-.inputform{
-    text-align: center;
+.inputForm{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 320px;
 }
