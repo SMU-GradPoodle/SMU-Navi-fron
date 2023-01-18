@@ -1,6 +1,6 @@
 .Main_body_wrap{
     width: 100vw;
-    height: calc(100vh - 180px);
+    height: calc(100vh - 185px);
 }
 
 .Main_body_box{
@@ -81,18 +81,23 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 7px 15px;
+    justify-content: center;
+    padding: 0px 15px;
+    box-sizing: border-box;
 }
 
 #demonNumber p, #accNumber p{
     color: white;
     margin: 0;
+    padding: 7px 0;
 }
 
 #demonNumber > div, #accNumber > div{
     background-color: white;
     margin-left: 10px;
+    margin-bottom: 1px;
     padding: 2px 15px;
     font-weight: 500;
     border-radius: 15px;
+    box-sizing: border-box;
 }
