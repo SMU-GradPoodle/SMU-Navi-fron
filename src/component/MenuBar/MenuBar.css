@@ -1,17 +1,21 @@
+/*.MenuBarWrap{*/
+/*    padding-left: 30px;*/
+/*}*/
+
 .MenuBarLineWrap{
-    width: 200px;
+    width: 150px;
 }
 
 .MenuBarLineWrap{
     padding: 5px 0px;
-    border-bottom: 3px solid black;
+    border-bottom: 2px solid black;
 }
 
 .MenuBarLineWrap p{
     font-weight: bolder;
     text-align: center;
-    font-size: 20px;
-    padding: 10px 0px;
+    font-size: 17px;
+    padding: 7px 0px;
     /*background-color: #5A634E;*/
 }
 

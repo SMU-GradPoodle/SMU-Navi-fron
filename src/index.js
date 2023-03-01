@@ -10,6 +10,7 @@ import Main from './pages/Main/Main';
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
 import FindPw from "./pages/FindPw/FindPw";
+import Mypage from "./pages/Mypage/Mypage";
 
 import Menu from "./component/MenuBar/MenuBar";
 import Modal from "./component/Modal/Modal";
@@ -40,6 +41,7 @@ root.render(
             <Route path="/take_taxi" element={<TakeTaxi />}></Route>
             <Route path="/notice" element={<Notice />}></Route>
             <Route path="/modal" element={<Modal content={"가입 완료 되었습니다"} btName={"로그인"} />}></Route>
+            <Route path="/mypage" element={<Mypage />}></Route>
         </Routes>
     </Router>
 );
