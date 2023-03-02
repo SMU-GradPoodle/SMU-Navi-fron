@@ -79,21 +79,20 @@ const Address = ({ searchPlace }, {option, changeOptin}) => {
         <div id="list-wrapper">
             <div id="result-list" >
                 {Places.map((item, i) => (
-                    <div  key={i} >
-                        <div id={"road_list_box"}  onClick={e => handleOnClick(e, i)} >
-                            <h4>{i + 1}.&nbsp;&nbsp;{item.place_name}</h4>
+                    <div  key={i} style={{ marginTop: '20px' }}>
+                        <div  onClick={e => handleOnClick(e, i)} >
+                            <h5>{i + 1}.&nbsp;&nbsp;{item.place_name}</h5>
                             {item.road_address_name ? (
                                 <div >
-                                    <span id={"road_address_name"}>(도로명) {item.road_address_name}</span><br/>
-                                    <span>(지번주소) {item.address_name}</span>
+                                    <span >{item.road_address_name}</span>
+                                    <span>{item.address_name}</span>
                                 </div>
                             ) : (
-                                <span>(지번주소) {item.address_name}</span>
+                                <span>{item.address_name}</span>
                             )}
-                            {/*<span>{item.phone}</span>*/}
+                            <span>{item.phone}</span>
+                            <hr />
                         </div>
-
-                        <hr />
                     </div>
                 ))}
                 <div id="pagination"></div>

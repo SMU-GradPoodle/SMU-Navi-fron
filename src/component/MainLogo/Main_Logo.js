@@ -1,6 +1,6 @@
 import React from 'react';
 import './Main_Logo.css';
-import Logo from './../../img/SmuNaviLogo.png';
+import Logo from '../../img/SmuNaviLogo.png';
 
 export default function Main_Logo(){
     return(

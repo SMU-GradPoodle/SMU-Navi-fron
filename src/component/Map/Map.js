@@ -1,17 +1,17 @@
 import './Map.css';
 import { React, useState } from 'react';
+import MainLogo from "../MainLogo/Main_Logo";
+import SearchBox from "../SearchBox/Search_Box";
 const { kakao } = window;
 
 
-export default function Map(location) {
-
+const Map = ({location}, {linePath}) => {
     // 마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
     var infowindow = new kakao.maps.InfoWindow({zIndex:1});
-
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
         mapOption = {
             center: new kakao.maps.LatLng(37.566826, 126.9786567), // 지도의 중심좌표
-            level: 10 // 지도의 확대 레벨
+            level: 8 // 지도의 확대 레벨
         };
 
     // 지도를 생성합니다
@@ -116,31 +116,7 @@ export default function Map(location) {
     //
     // // 선 그리기 (일단 가상 좌표들)
     // // 선 구성 좌표 배열
-    // var linePath = [
-    //     new kakao.maps.LatLng(37.6060168573,126.9104597465),
-    //     new kakao.maps.LatLng(37.6020320757,126.9102266857),
-    //     new kakao.maps.LatLng(37.5997666658,126.9101252157),
-    //     new kakao.maps.LatLng(37.5986006142,126.9100665956),
-    //     new kakao.maps.LatLng(37.5987592495, 126.9149894161),
-    //     new kakao.maps.LatLng(37.6086555139,126.9265165396),
-    //     new kakao.maps.LatLng(37.6084619409,126.9322904306),
-    //     new kakao.maps.LatLng(37.6103568403, 126.944843955),
-    //     new kakao.maps.LatLng(37.6083054034,126.9564166508),
-    //     new kakao.maps.LatLng(37.6069644475,126.9585297928),
-    //     new kakao.maps.LatLng(37.6046629766, 126.9608880061),
-    //     new kakao.maps.LatLng(37.604108905882, 126.955159496571)
-    // ];
-    //
-    // //선 그리기
-    // var polyline = new kakao.maps.Polyline({
-    //     path: linePath, // 선을 구성하는 좌표배열
-    //     strokeWeight: 4, // 선의 두께
-    //     strokeColor: '#FF7A00', // 선의 색깔
-    //     strokeOpacity: 1, // 선의 불투명도  (0에 가까울수록 투명)
-    //     strokeStyle: 'solid' // 선의 스타일
-    // });
-    //
-    // polyline.setMap(map);
+
 
 
     // // 지도 띄우기
@@ -160,4 +136,6 @@ export default function Map(location) {
     // });
     //
     // marker.setMap(map);
+
 }
+export default Map

@@ -1,10 +1,10 @@
 import './FindPw.css';
 import React from 'react';
 import {Link} from 'react-router-dom';
-import Input from './../../component/Input/Input';
-import Footer from './../../component/Footer/Footer';
-import MainLogo from './../../img/SmuNaviLogo2.png';
-import Button from './../../component/Button/Button';
+import Input from '../../component/Input/Input';
+import Footer from '../../component/Footer/Footer';
+import MainLogo from '../../img/SmuNaviLogo2.png';
+import Button from '../../component/Button/Button';
 
 function FindPw(){
     return(
