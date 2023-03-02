@@ -58,7 +58,7 @@ const Address = ({ searchPlace }, {option, changeOptin}) => {
 
     var geocoder = new kakao.maps.services.Geocoder();
 
-    const handleOnClick = (e, i) => {
+   const handleOnClick = (e, i) => {
         const addr = Places[i].address_name;
         console.log(addr);
         geocoder.addressSearch(addr, function(result, status) {
@@ -67,35 +67,32 @@ const Address = ({ searchPlace }, {option, changeOptin}) => {
                 var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
                 var startX = coords.Ma;
                 var startY = coords.La;
-
                 document.getElementById("searchStartLocBt").value = startX;
                 document.getElementById("folderBoxTrue").value = startY;
-            }})
+        }})
         document.getElementById("result-list").style.display = 'none';
-        document.getElementById("input").value = addr;
 
+        document.getElementById("input").value = addr;
 
     };
     return (
         <div id="list-wrapper">
-
             <div id="result-list" >
                 {Places.map((item, i) => (
-                    <div  key={i} >
-                        <div id={"road_list_box"}  onClick={e => handleOnClick(e, i)} >
-                            <h4>{i + 1}.&nbsp;&nbsp;{item.place_name}</h4>
+                    <div  key={i} style={{ marginTop: '20px' }}>
+                        <div  onClick={e => handleOnClick(e, i)} >
+                            <h5>{i + 1}.&nbsp;&nbsp;{item.place_name}</h5>
                             {item.road_address_name ? (
                                 <div >
-                                    <span id={"road_address_name"}>(도로명) {item.road_address_name}</span><br/>
-                                    <span>(지번주소) {item.address_name}</span>
+                                    <span >{item.road_address_name}</span>
+                                    <span>{item.address_name}</span>
                                 </div>
                             ) : (
-                                <span>(지번주소) {item.address_name}</span>
-                                )}
-                            {/*<span>{item.phone}</span>*/}
+                                <span>{item.address_name}</span>
+                            )}
+                            <span>{item.phone}</span>
+                            <hr />
                         </div>
-
-                        <hr />
                     </div>
                 ))}
                 <div id="pagination"></div>
