@@ -1,0 +1,36 @@
+#list-wrapper{
+    display: inline-block;
+    position: relative;
+}
+
+#result-list{
+    background-color: white;
+    opacity: 0.9;
+    width: 300px;
+    height: 300px;
+    overflow: auto;
+    text-align: center;
+    display: none;
+    position: absolute;
+    right: -5px;
+    top: 7px;
+}
+
+#road_list_box{
+    padding-bottom: 10px;
+}
+
+#road_list_box h4{
+    margin: 15px 0 10px 0;
+}
+
+div,span{
+    cursor: pointer;
+}
+
+#searchStartLocBt{
+  padding-top: -100px;
+}
+/*#road_address_name{*/
+/*    font-size: 20px;*/
+/*}*/

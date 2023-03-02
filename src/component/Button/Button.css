@@ -1,0 +1,12 @@
+button{
+    background-color: #589BFF;
+    color: white;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button > a{
+    color: white;
+    text-decoration: none;
+}
