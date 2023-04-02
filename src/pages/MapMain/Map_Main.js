@@ -10,15 +10,15 @@ import {useLocation} from "react-router-dom";
 
 const Map_Main = ({linePath}) => {
     const selectData = useLocation();
-    const location = selectData.state.value;
-    console.log(location);
+    const selecWays = selectData.state.value;
+    console.log(selecWays);
 
     return (
         <div className={"Main_wrap"}>
 
             <MainLogo />
             <div id='map' ></div>
-            <SearchBox location={location} />
+            <SearchBox selecWays={selecWays} />
         </div>
     );
 }
