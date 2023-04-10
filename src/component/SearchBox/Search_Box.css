@@ -1,92 +1,51 @@
-.Search_box_wrap{
-    height: calc(100vh - 110px);
-    width: 350px;
+.search-wrapper{
+    height: calc(100vh - 290px);
+    width: 300px;
     margin-top: 110px;
-    background-color: #3E447B;
+    background-color: #ffffff;
+    stroke: #879B6D;
+    border: 1px solid #879B6D;
     position: absolute;
-    left: 0;
-    top: 0;
+    left: 10%;
+    top: 3%;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
 }
 
-.Search_box_title{
+#Search_box_title{
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-content: center;
 }
 
-.Search_box_title h3{
+#Search_box_title h3{
     text-align: center;
     padding: 10px;
     margin: 30px auto 0 auto;
-    color: white;
+    color: black;
     font-size: 30px;
-}
-
-#startLoc{
-    width: 80%;
-    height: 35px;
-    font-size: 15px;
-    margin: 10px auto 0 auto;
-    border-radius: 10px;
-    border: 0;
-    padding: 0 10px;
-}
-
-.SearchBtWrap{
-    width: 86%;
-    margin: 15px auto 0 auto;
-    display: flex;
-    justify-content: flex-end;
-}
-
-#searchStartLocBt{
-    width: 80px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    background-color: #D9D9D9;
-    border: 0;
-    border-radius: 10px;
-    letter-spacing: 2px;
-    cursor: pointer;
-}
-
-#folderBoxTrue{
-    position: absolute;
-    left: 350px;
-    top: 10px;
-    cursor: pointer;
-}
-
-#folderBoxFalse{
-    position: absolute;
-    left: 0;
-    top: 10px;
-    cursor: pointer;
 }
 
 #underBar{
     width: 90%;
     margin: 15px auto 0 auto;
     height: 0.7px;
-    background-color: white;
+    background-color: #879B6D;
 }
 #ways-list-wrapper{
     display: inline-block;
 }
 #ways-list{
-    background-color: #3E447B;
+    background-color: #ffffff;
     opacity: 0.9;
-    width: 350px;
-    height: 390px;
+    width: 300px;
+    height: 78%;
     overflow: scroll;
     text-align: center;
     display: block;
     position: absolute;
-
-    top: 200px;
+    top: 20%;
 }
 
 #ways_list_box{
@@ -96,6 +55,19 @@
 #h4{
     margin: 15px 0 10px 0;
     color: black;
+}
+
+#button_list{
+    transform: translate(88%, -500%);
+}
+
+#button_list button{
+    margin-top: 20px;
+    width: 8%;
+    height: 30px;
+    background-color: white;
+    color: black;
+    border: 1px solid black;
 }
 
 
