@@ -1,5 +1,5 @@
 import React from 'react';
-import smuLogo from '../../img/smuLogo.png';
+import smuLogo from './../../img/smuLogo.png';
 import './Footer.css';
 
 export default function Footer() {

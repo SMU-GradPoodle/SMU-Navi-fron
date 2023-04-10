@@ -3,8 +3,14 @@ import React from "react";
 import axios from 'axios';
 import $ from 'jquery';
 import Button from './../Button/Button.js';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function SignupInput(){
+
+    //비밀번호 백엔드로 보내기
+    const [userName, isUserName] = useState('');
+    const [sendPw, isSendPw] = useState('');
 
     // 비밀번호, 비밀번호 확인 정규식 검사
     const [passwordError, setPasswordError] = React.useState("");
@@ -17,7 +23,9 @@ function SignupInput(){
     const passwordRegEx = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{4,16}$/;
     const passwordCheck = (e) => {
         const value = e.target.value;
+        const pwChangeValue = e.currentTarget.value;
         setPassword(value);
+        isSendPw(pwChangeValue);
         if (!passwordRegEx.test(value)) {
             setPasswordError('비밀번호는 영문자 + 숫자 조합이며 특수문자 하나를 포함해야 합니다.(4~12자리)');
         } else {
@@ -34,18 +42,29 @@ function SignupInput(){
         }
     }
 
+    const userNameCheck = (e) =>{
+        isUserName(e.currentTarget.value);
+    }
+
+    function signUpSubmit(){
+        axios({
+            method: 'post',
+            url: 'http://'
+        })
+    }
+
     return(
         <div className={"signupBox"}>
             <div className={"signupInputBoxWrap"}>
                 <p className={"signupInputName"}>닉네임</p>
                 <div className={"signupInputNameBox"}>
-                    <input type="text" id="nameSignupInput"/>
+                    <input type="text" onChange={userNameCheck} id="nameSignupInput"/>
                     <Button name="중복확인" id="sameNameCheckBt"/>
                     <p id={"redNameTitle"}>이미 등록된 닉네임입니다.</p>
                 </div>
             </div>
             <div className={"signupInputBoxWrap"}>
-                <p className={"signupInputName"}>비밀번호</p>
+                <p className={"signupInputName"}>비밀번호</p>s
                 <div>
                     <input type="password" id="pwSignupInput"
                            value={password}
@@ -80,7 +99,7 @@ function SignupInput(){
                 </div>
                 <p id={"redNumTitle"}>잘못된 인증번호입니다.</p>
             </div>
-            <Button name="가입하기" id="signupBt"/>
+            <button id="signupBt" onClick={signUpSubmit}>가입하기</button>
         </div>
     )
 }

@@ -1,13 +1,21 @@
-/*.MenuBarWrap{*/
-/*    padding-left: 30px;*/
-/*}*/
+.MenuBarWrap{
+    padding-left: 30px;
+    position: absolute;
+    top: 15vh;
+    left: 1vw;
+    display: grid;
+    grid-template-rows: 50px 50px 50px 50px 50px;
+}
 
 .MenuBarLineWrap{
     width: 150px;
 }
 
 .MenuBarLineWrap{
-    padding: 5px 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     border-bottom: 2px solid black;
 }
 
@@ -15,7 +23,7 @@
     font-weight: bolder;
     text-align: center;
     font-size: 17px;
-    padding: 7px 0px;
+    padding-top: 5px;
     /*background-color: #5A634E;*/
 }
 
