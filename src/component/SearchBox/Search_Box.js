@@ -352,37 +352,37 @@ function Search_Box () {
     }
 
     return(
-    <div>
-        <div className={"search-wrapper"}>
-            <div id={"Search_box_title"}><h3>상세경로</h3></div>
-            <div id={"underBar"}/>
-            <div id="ways-list-wrapper">
-                <div id="ways-list">
-                    {wayTime.map((data, index) => (
-                        <div key={index}>
-                            <div onClick={e => handleOnClick(e, index)}>
-                                <h5>{index+1} . </h5>
-                                {transferName[index].map((obj, index) => (
-                                    <h5>  {obj.type} : {obj.laneName} &nbsp;소요시간: {obj.sectionTime}분</h5>
-                                ))}
-                                <h5>총소요시간 : {data}분</h5>
-                                <hr/>
+        <div>
+            <div className={"search-wrapper"}>
+                <div id={"Search_box_title"}><h3>상세경로</h3></div>
+                <div id={"underBar"}/>
+                <div id="ways-list-wrapper">
+                    <div id="ways-list">
+                        {wayTime.map((data, index) => (
+                            <div key={index}>
+                                <div onClick={e => handleOnClick(e, index)}>
+                                    <h5>{index+1} . </h5>
+                                    {transferName[index].map((obj, index) => (
+                                        <h5>  {obj.type} : {obj.laneName} &nbsp;소요시간: {obj.sectionTime}분</h5>
+                                    ))}
+                                    <h5>총소요시간 : {data}분</h5>
+                                    <hr/>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </div>
-        </div>
-        <div id={"button_list"}>
-            {position.map((obj, index) => (
-                <div key={index}>
-                    <button onClick={e => buttonSelect(e, index)}>{obj.title}</button>
+            <div id={"button_list"}>
+                {position.map((obj, index) => (
+                    <div key={index}>
+                        <button onClick={e => buttonSelect(e, index)}>{obj.title}</button>
 
-                </div>
-            ))}
+                    </div>
+                ))}
 
+            </div>
         </div>
-    </div>
     )
 }
 

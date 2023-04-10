@@ -1,5 +1,5 @@
 import './Map.css';
-import { React} from 'react';
+import { React, useState } from 'react';
 import MainLogo from "../MainLogo/Main_Logo";
 import SearchBox from "../SearchBox/Search_Box";
 const { kakao } = window;
@@ -56,6 +56,5 @@ const Map = ({location}, {linePath}) => {
             infowindow.open(map, marker);
         });
     }
-
 }
 export default Map
