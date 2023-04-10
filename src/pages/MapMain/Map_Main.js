@@ -9,16 +9,12 @@ import Address from '../../component/SearchPlaces/Address';
 import {useLocation} from "react-router-dom";
 
 const Map_Main = ({linePath}) => {
-    const selectData = useLocation();
-    const location = selectData.state.value;
-    console.log(location);
 
     return (
         <div className={"Main_wrap"}>
-
-            <MainLogo />
+            <MainLogo className={"mainlogo"}/>
             <div id='map' ></div>
-            <SearchBox location={location} />
+            <SearchBox />} />
         </div>
     );
 }
