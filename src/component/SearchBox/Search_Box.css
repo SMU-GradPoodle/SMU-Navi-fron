@@ -58,11 +58,11 @@
 }
 
 #button_list{
-    transform: translate(88%, -500%);
+    transform: translate(88%, -300%);
 }
 
 #button_list button{
-    margin-top: 20px;
+    margin-top: 2%;
     width: 8%;
     height: 30px;
     background-color: white;

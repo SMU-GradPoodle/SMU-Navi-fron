@@ -14,7 +14,7 @@ const Map_Main = ({linePath}) => {
         <div className={"Main_wrap"}>
             <MainLogo className={"mainlogo"}/>
             <div id='map' ></div>
-            <SearchBox />} />
+            <SearchBox />
         </div>
     );
 }
