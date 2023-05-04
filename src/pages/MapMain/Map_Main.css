@@ -2,15 +2,17 @@
     width: 100vw;
     height: calc(100vh - 110px);
     margin: auto;
-    padding: 0;
+    padding: 0%;
+}
+#greenLine{
+    color: #879B6D;
+    width: 90%;
 
 }
 
-
-
 #map{
-    margin-top: 2%;
-    transform: translate(20%, 0);
+    transform: translate(20%, 0vh);
+    margin-bottom: -10vh;
     width: 70%;
     height: 76%;
     z-index: 0;

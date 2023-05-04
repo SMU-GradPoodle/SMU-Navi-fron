@@ -43,7 +43,6 @@ function FindPw(){
                 </div>
                 <Button name="비밀번호 변경하기" id="signupBt"/>
             </div>
-
             <Footer />
         </div>
     )

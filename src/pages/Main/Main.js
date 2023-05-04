@@ -3,49 +3,25 @@ import MainLogo from '../../component/MainLogo/Main_Logo';
 import NavBar from '../../component/NavBar/Nav_Bar';
 import Footer from '../../component/Footer/Footer';
 import MainBack from '../../img/schoolBackGround.png';
-import noticeIcon from '../../img/확성기.png';
+//import noticeIcon from '../../img/확성기.png';
 import './Main.css';
 import Search from '../../component/SearchPlaces/Search';
 import {useNavigate} from "react-router-dom";
-import axios from "axios";
 
 
 export default function Main() {
+
     const navigate = useNavigate();
-    const baseUrl = "http://localhost:8080/api/map/transit?";
-    const ways = [];
-
-    async function getData(startPoint) {
-        await axios
-            .get(baseUrl + startPoint)
-            .then((response) => {
-                console.log(baseUrl+startPoint);
-                const cnt = response.data.pathInfoList.length;
-                for (var i = 0; i < cnt; i++) {
-                    ways[i] = response.data.pathInfoList[i];
-
-                }
-                console.log(ways);
-                navigate('/map_main', {
-                    state: {
-                        value : ways
-                    }
-                });
-
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-    }
-
-
     const mapMain = () => {
         var x = document.getElementById("folderBoxTrue").value;
         var y = document.getElementById("searchStartLocBt").value;
         const startPoint = "startX=" + x + "&" + "startY=" + y;
-        getData(startPoint);
 
-
+        navigate('/map_main', {
+            state: {
+                value : startPoint
+            }
+        });
     };
 
     return(
@@ -55,7 +31,7 @@ export default function Main() {
                 <NavBar />
                 <div className={"Main_body_box"}>
                     <div id={"MainBodyNotice"}>
-                        <img src={noticeIcon} />
+                        {/*<img src={noticeIcon} />*/}
                         <p>[ 공지사항 ] ㅂㅐ가 고프다!!!! </p>
                     </div>
                     <div id={"MainBodySearch"}>
