@@ -7,6 +7,7 @@ function TakeTaxi(){
         <div>
             <MainLogo />
             <MenuBar />
+            
         </div>
     )
 }

@@ -1,70 +1,111 @@
 import React, {useState, useEffect} from 'react';
 import './Search_Box.css';
-import NavBar from '../../component/NavBar/Nav_Bar';
-import Address from '../SearchPlaces/Address';
-import folder from '../../img/접기버튼.png';
-import Search from '../SearchPlaces/Search';
-import axios from 'axios';
-import Map from  '../Map/Map';
-import qe from "styled-components";
-import {render} from "react-dom";
-import produce from "immer";
-import ReactDOM  from "react-dom/client";
-import Nav_Bar from "../NavBar/Nav_Bar";
+import axios, {head} from 'axios';
 
 const { kakao } = window;
+var polylines = [];
+
+// var pos1 = new kakao.maps.LatLng(37.6044854, 126.8918506);  //sw
+// var pos2 = new kakao.maps.LatLng(37.5911303, 126.8799154);  //ne
+
+var pos1 = new kakao.maps.LatLng(37.6744854, 127.0818506);  //ne
+var pos2 = new kakao.maps.LatLng(37.5211303, 126.7799154);  //sw
+var bounds = new kakao.maps.LatLngBounds(pos1, pos2);
+
 function Search_Box () {
-    const baseUrl = "http://localhost:8080/api/map/transit?";
+    const baseUrl = "http://localhost:8080/api/route/";
     const [ways, setWays] = useState([0]);
-    const [removeWays, setRemoveWays] = useState([0]);
     const transfer = [];
-    const point = [{La: "", Ma: ""}];
-    const [linePath, setLinePath] = useState([]);
-    const [transferName, setTransferName] = useState([null]);
-    const [wayTime, setWayTime] = useState([]);
+    let point = [{La: "", Ma: ""}];
+    let linePath = [];
+    const [transferName, setTransferName] = useState([]);
+    const [wayTime, setWayTime]= useState([]);
     const [map, setMap] = useState();
+    const [route, setRoute] = useState([0]);
+    let [position,setposition] = useState([]);
 
-    var removCnt = 0;
-    var myCnt = 5;
+    let [mysCnt, setMySCnt] = useState(5);
 
-    let [polyline1, setPoly1] = useState(null);
-    let [polyline2, setPoly2] = useState(null);
-    let [polyline3, setPoly3] = useState(null);
-    let [polyline4, setPoly4] = useState(null);
-    let [polyline5, setPoly5] = useState(null);
+    let prePathCnt = 0;
+    let preSubPathCnt = 0;
 
-    var position = [
-        {
-            title: "경복궁역",
-            latlng: new kakao.maps.LatLng(37.5796, 126.9770),
-            x: 126.9770,
-            y: 37.5796
-        },
-        {
-            title: "홍제역",
-            latlng: new kakao.maps.LatLng(37.5888, 126.9441),
-            x: 126.9441,
-            y: 37.5888
-        }
-    ];
+    //영원히 안변할 변수
+    const imageSize = new kakao.maps.Size(20, 25);
+    const imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
+    const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+    let myCnt = 5;
+    //~영원히 안변할 변수
 
 
-    useEffect(async () => {
+    function getRandomColor() {
+        return '#' + Math.floor(Math.random() * 16777215).toString(16);
+    }
+    const polyOption = {
+        strokeWeight: 4, // 선의 두께
+        strokeColor: 'red', // 선의 색깔
+        strokeOpacity: 1, // 선의 불투명도  (0에 가까울수록 투명)
+        strokeStyle: 'solid' // 선의 스타일
+    };
+
+    for(let i=0; i<5; i++){
+        polylines = polylines.concat(new kakao.maps.Polyline(polyOption));
+    }
+
+    async function getRoute() {
+        await axios.get("http://localhost:8080/api/route")
+            .then((response) => {
+                for (let k = 0; k < response.data.length; k++) {
+                    position[k] = {
+                        Id: response.data[k].startStationId,
+                        title : response.data[k].startStationName,
+                        x: response.data[k].x,
+                        y: response.data[k].y,
+                        latlng: new kakao.maps.LatLng(response.data[k].y, response.data[k].x),
+                    };
+                    // setposition(position);
+                }
+
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }
+
+     useEffect( async () => {
+         await getRoute();
+
         const mapContainer = document.getElementById('map'), // 지도를 표시할 div
             mapOption = {
-                center: new kakao.maps.LatLng(37.566826, 126.9786567),
-                level: 7 // 지도의 확대 레벨
+                center: new kakao.maps.LatLng(37.596826, 126.9586567),
+                level: 8 // 지도의 확대 레벨
+
             };
 
         // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
         const map = new kakao.maps.Map(mapContainer, mapOption);
+        map.setMaxLevel(8);
         setMap(map);
 
-        position.map((p, idx) => {
-            var imageSize = new kakao.maps.Size(20, 25);
-            var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
+         var constrainBounds = function() {
+             var center = map.getCenter();
 
-            var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+             var clipLat, clipLng, sw, ne;
+
+             if (!bounds.contain(center)) {
+
+                 sw = bounds.getSouthWest();
+                 ne = bounds.getNorthEast();
+
+                 clipLat = Math.min(Math.max(sw.getLat(), center.getLat()), ne.getLat());
+                 clipLng = Math.min(Math.max(sw.getLng(), center.getLng()), ne.getLng());
+
+                 map.setCenter(new kakao.maps.LatLng(clipLat, clipLng));
+             }
+         };
+
+         kakao.maps.event.addListener( map, 'drag', constrainBounds);
+         kakao.maps.event.addListener( map, 'zoom_changed', constrainBounds);
+        position.map((p, idx) => {
 
             var marker = new kakao.maps.Marker({
                 map: map,
@@ -74,282 +115,208 @@ function Search_Box () {
                 clickable: true
             });
             marker.setMap(map);
+            // setTransferName(null);
+
+
             kakao.maps.event.addListener(marker, 'click', async function Click ()  {
-                console.log(polyline1);
-                console.log(polyline2);
-                var x = p.x;
-                var y = p.y;
-                const startPoint = "startX=" + x + "&" + "startY=" + y;
                 getRemove();
-                for (var i = 0; i < myCnt; i++) {
-                    if (i === 0) {
-                        if (polyline1 != null)
-                            polyline1.setMap(null);
-                    } else if (i === 1) {
-                        if (polyline2 != null)
-                            polyline2.setMap(null);
-                    } else if (i === 2) {
-                        if (polyline3 != null)
-                            polyline3.setMap(null);
-                    } else if (i === 3) {
-                        if (polyline4 != null)
-                            polyline4.setMap(null);
-                    } else if (i === 4) {
-                        if (polyline5 != null)
-                            polyline5.setMap(null);
-                    }
-                }
-                polyline1 = null;
-                polyline2 = null;
-                polyline3 = null;
-                polyline4 = null;
-                polyline5 = null;
-                myCnt = 0;
-                await getData(startPoint);
-                for (var i = 0; i < ways[0].subPathList.length; i++) {
-                    transfer.length = ways[0].subPathList.length;
-                    transfer[i] = ways[0].subPathList[i];
+                await axios
+                    .get(baseUrl + p.Id)
+                    .then((response) => {
+                        let newWays = [];
+                        let newTransferName = [];
+                        let newWayTime = [];
+
+                        // for (var i = 0; i < prePathCnt; i++) {
+                        //     delete ways[i]
+                        //     delete transferName[i]
+                        //     delete wayTime[i]
+                        // }
+                        prePathCnt = response.data.pathInfoCnt;
+
+                        for(var i = 0; i < response.data.pathInfoCnt; i++) {
+                            newWays[i] = response.data.pathInfoList[i];
+                        }
+                        transferName.length = response.data.pathInfoList.length;
+                        wayTime.length = response.data.pathInfoList.length;
 
 
-                    for (var j = 0; j < transfer[i].stationList.length; j++) {
-                        point.length = transfer[i].stationList.length;
-                        point[j] = {La: transfer[i].stationList[j].gpsX, Ma: transfer[i].stationList[j].gpsY}
-                    }
+                        newWays.forEach(function(item1,k){
+                            newTransferName[k] = [];
+                            item1.subPathList.forEach(function(item2){
+                                newTransferName[k] = newTransferName[k].concat(item2);
+                                console.log(item2);
+                            })
+                            // wayTime[k] =  item1.time;
+                            newWayTime[k] = item1.time;
+                        })
+                        setWays(newWays);
+                        setTransferName(newTransferName);
+                        setWayTime(newWayTime);
+                        preSubPathCnt = newWays[0].subPathList.length;
+                        for (var i = 0; i < polylines.length; i++) {
+                            polylines[i].setPath([]);
+                            polylines[i].setMap(null);
+                        }
 
-                    linePath.length = point.length;
-                    const elements = point.map((item, index) => {
-                        linePath[index] = new kakao.maps.LatLng(item.Ma, item.La);
+                        console.log(newWays)
+                        newWays[0].subPathList.forEach(function(item1,i){
+                            point = []
+                            item1.gpsDetail.forEach(function(item2,j){
+                                point[j] = {La: item2.gpsX, Ma: item2.gpsY}
+                            });
+                            transfer[i] = item1;
+
+                            linePath = [];
+
+                            point.map((item, index) => {
+                                linePath[index] = new kakao.maps.LatLng(item.Ma, item.La);
+                            })
+
+                            console.log(linePath)
+                            polylines[i].setPath(linePath);
+                            myCnt++;
+                        });
+
+                        for (let k = 0; k < preSubPathCnt; k++) {
+                            polylines[k].setMap(map);
+                        }
+
                     })
-                    console.log(polyline2);
-                    if (removCnt === 0) {
-                        setPoly1(polyline1 = new kakao.maps.Polyline({
-                            path: linePath, // 선을 구성하는 좌표배열
-                            strokeWeight: 4, // 선의 두께
-                            strokeColor: 'red', // 선의 색깔
-                            strokeOpacity: 1, // 선의 불투명도  (0에 가까울수록 투명)
-                            strokeStyle: 'solid' // 선의 스타일
-                        }));
-
-                    } else if (removCnt === 1) {
-                        setPoly2(polyline2 = new kakao.maps.Polyline({
-                            path: linePath, // 선을 구성하는 좌표배열
-                            strokeWeight: 4, // 선의 두께
-                            strokeColor: 'red', // 선의 색깔
-                            strokeOpacity: 1, // 선의 불투명도  (0에 가까울수록 투명)
-                            strokeStyle: 'solid' // 선의 스타일
-                        }));
-                    } else if (removCnt === 2) {
-                        setPoly3( polyline3 = new kakao.maps.Polyline({
-                            path: linePath, // 선을 구성하는 좌표배열
-                            strokeWeight: 4, // 선의 두께
-                            strokeColor: 'red', // 선의 색깔
-                            strokeOpacity: 1, // 선의 불투명도  (0에 가까울수록 투명)
-                            strokeStyle: 'solid' // 선의 스타일
-                        }));
-                    } else if (removCnt === 3) {
-                        setPoly4(polyline4 = new kakao.maps.Polyline({
-                            path: linePath, // 선을 구성하는 좌표배열
-                            strokeWeight: 4, // 선의 두께
-                            strokeColor: 'red', // 선의 색깔
-                            strokeOpacity: 1, // 선의 불투명도  (0에 가까울수록 투명)
-                            strokeStyle: 'solid' // 선의 스타일
-                        }));
-                    } else if (removCnt === 4) {
-                        setPoly5(polyline5 = new kakao.maps.Polyline({
-                            path: linePath, // 선을 구성하는 좌표배열
-                            strokeWeight: 4, // 선의 두께
-                            strokeColor: 'red', // 선의 색깔
-                            strokeOpacity: 1, // 선의 불투명도  (0에 가까울수록 투명)
-                            strokeStyle: 'solid' // 선의 스타일
-                        }));
-                    }
-                    removCnt++;
-                    myCnt++;
-                }
-                for (var k = 0; k < myCnt; k++) {
-                    if (k === 0) {
-                        if (polyline1 != null)
-                            polyline1.setMap(map);
-                    } else if (k === 1) {
-                        if (polyline2 != null)
-                            polyline2.setMap(map);
-                    } else if (k === 2) {
-                        if (polyline3 != null)
-                            polyline3.setMap(map);
-                    } else if (k === 3) {
-                        if (polyline4 != null)
-                            polyline4.setMap(map);
-                    } else if (k === 4) {
-                        if (polyline5 != null)
-                            polyline5.setMap(map);
-                    }
-                }
-                removCnt = 0;
+                    .catch((error) => {
+                        console.log(error);
+                    })
             });
         });
 
     }, []);
 
-    async function getData(startPoint) {
+
+
+    async function getData(p) {
+        getRemove();
+
         await axios
-            .get(baseUrl + startPoint)
+            .get(baseUrl + p)
             .then((response) => {
-                console.log(baseUrl + startPoint);
 
-                for (var i = 0; i < ways.length; i++) {
-                    ways[i] = [];
-                    transferName[i] = [];
-                    wayTime[i] = [];
-                }
-                const cnt = response.data.pathInfoList.length;
-                ways.length = response.data.pathInfoList.length;
-                transferName.length = response.data.pathInfoList.length;
-                wayTime.length = response.data.pathInfoList.length;
-                for (var i = 0; i < cnt; i++) {
-                    ways[i] = response.data.pathInfoList[i]
-                    for (var j = 0; j < ways[i].subPathList.length; j++) {
-                        transferName[i] = ways[i].subPathList;
-                    }
-                    wayTime[i] =  ways[i].time;
+                let newWays = [];
+                let newTransferName = [];
+                let newWayTime = [];
+
+                // for (var i = 0; i < prePathCnt; i++) {
+                //     delete ways[i]
+                //     delete transferName[i]
+                //     delete wayTime[i]
+                // }
+                prePathCnt = response.data.pathInfoCnt;
+
+                for(var i = 0; i < response.data.pathInfoCnt; i++) {
+                    newWays[i] = response.data.pathInfoList[i];
                 }
 
-                setWays(ways);
-                console.log(response.data);
-                drawPoly(0);
+
+                newWays.forEach(function(item1,k){
+                    newTransferName[k] = [];
+                    item1.subPathList.forEach(function(item2){
+                        newTransferName[k] = newTransferName[k].concat(item2);
+                        console.log(item2);
+                    })
+                    // wayTime[k] =  item1.time;
+                    newWayTime[k] = item1.time;
+                })
+                setWays(newWays);
+                setTransferName(newTransferName);
+                setWayTime(newWayTime);
+
+                preSubPathCnt = newWays[0].subPathList.length;
+
+                for (var i = 0; i < polylines.length; i++) {
+                    polylines[i].setPath([]);
+                    polylines[i].setMap(null);
+                }
+
+                console.log(newWays)
+                newWays[0].subPathList.forEach(function(item1,i){
+                    point = []
+                    item1.gpsDetail.forEach(function(item2,j){
+                        point[j] = {La: item2.gpsX, Ma: item2.gpsY}
+                    });
+                    transfer[i] = item1;
+
+                    linePath = [];
+
+                    point.map((item, index) => {
+                        linePath[index] = new kakao.maps.LatLng(item.Ma, item.La);
+                    })
+
+                    console.log(linePath)
+                    polylines[i].setPath(linePath);
+                    myCnt++;
+                });
+
+                for (let k = 0; k < preSubPathCnt; k++) {
+                    polylines[k].setMap(map);
+                }
             })
             .catch((error) => {
                 console.log(error);
             })
     }
 
-
     function getRemove() {
-        for (var i = 0; i < myCnt; i++) {
-            if (i === 0) {
-                if (polyline1 != null)
-                    polyline1.setMap(null);
-            } else if (i === 1) {
-                if (polyline2 != null)
-                    polyline2.setMap(null);
-            } else if (i === 2) {
-                if (polyline3 != null)
-                    polyline3.setMap(null);
-            } else if (i === 3) {
-                if (polyline4 != null)
-                    polyline4.setMap(null);
-            } else if (i === 4) {
-                if (polyline5 != null)
-                    polyline5.setMap(null);
-            }
+        for (var i = 0; i < polylines.length; i++) {
+            polylines[i].setPath([]);
+            polylines[i].setMap(null);
         }
-        polyline1 = null;
-        polyline2 = null;
-        polyline3 = null;
-        polyline4 = null;
-        polyline5 = null;
-        myCnt = 0;
     }
 
 
     function drawPoly(w) {
-        console.log(ways);
-        console.log(ways[0].subPathList.length);
-
+        mysCnt = ways[w].subPathList.length;
         for (var i = 0; i < ways[w].subPathList.length; i++) {
-            transfer.length = ways[w].subPathList.length;
+            // transfer.length = ways[w].subPathList.length;
             transfer[i] = ways[w].subPathList[i];
 
+            linePath = []
+            // for (var j = 0; j < transfer[i].stationList.length; j++) {
+            //     point[j] = {La: transfer[i].stationList[j].gpsX, Ma: transfer[i].stationList[j].gpsY}
+            // }
 
-            for (var j = 0; j < transfer[i].stationList.length; j++) {
-                point.length = transfer[i].stationList.length;
-                point[j] = {La: transfer[i].stationList[j].gpsX, Ma: transfer[i].stationList[j].gpsY}
-            }
-
-            linePath.length = point.length;
-            const elements = point.map((item, index) => {
-                linePath[index] = new kakao.maps.LatLng(item.Ma, item.La);
+            transfer[i].gpsDetail.map((item, index) => {
+                linePath[index] = new kakao.maps.LatLng(item.gpsY, item.gpsX);
             })
-            console.log(polyline2);
-            if (removCnt === 0) {
-                setPoly1(polyline1 = new kakao.maps.Polyline({
-                    path: linePath, // 선을 구성하는 좌표배열
-                    strokeWeight: 4, // 선의 두께
-                    strokeColor: 'red', // 선의 색깔
-                    strokeOpacity: 1, // 선의 불투명도  (0에 가까울수록 투명)
-                    strokeStyle: 'solid' // 선의 스타일
-                }));
+            // polylines[i].setPath(null);
+            // polylines[i].setMap(null);
+            polylines[i].setPath(linePath);
+        }
 
-            } else if (removCnt === 1) {
-                setPoly2(polyline2 = new kakao.maps.Polyline({
-                    path: linePath, // 선을 구성하는 좌표배열
-                    strokeWeight: 4, // 선의 두께
-                    strokeColor: 'red', // 선의 색깔
-                    strokeOpacity: 1, // 선의 불투명도  (0에 가까울수록 투명)
-                    strokeStyle: 'solid' // 선의 스타일
-                }));
-            } else if (removCnt === 2) {
-                setPoly3( polyline3 = new kakao.maps.Polyline({
-                    path: linePath, // 선을 구성하는 좌표배열
-                    strokeWeight: 4, // 선의 두께
-                    strokeColor: 'red', // 선의 색깔
-                    strokeOpacity: 1, // 선의 불투명도  (0에 가까울수록 투명)
-                    strokeStyle: 'solid' // 선의 스타일
-                }));
-            } else if (removCnt === 3) {
-                setPoly4(polyline4 = new kakao.maps.Polyline({
-                    path: linePath, // 선을 구성하는 좌표배열
-                    strokeWeight: 4, // 선의 두께
-                    strokeColor: 'red', // 선의 색깔
-                    strokeOpacity: 1, // 선의 불투명도  (0에 가까울수록 투명)
-                    strokeStyle: 'solid' // 선의 스타일
-                }));
-            } else if (removCnt === 4) {
-                setPoly5(polyline5 = new kakao.maps.Polyline({
-                    path: linePath, // 선을 구성하는 좌표배열
-                    strokeWeight: 4, // 선의 두께
-                    strokeColor: 'red', // 선의 색깔
-                    strokeOpacity: 1, // 선의 불투명도  (0에 가까울수록 투명)
-                    strokeStyle: 'solid' // 선의 스타일
-                }));
-            }
-            removCnt++;
-            myCnt++;
+        for (var k = 0; k < mysCnt; k++) {
+            polylines[k].setMap(map);
         }
-        for (var k = 0; k < myCnt; k++) {
-            if (k === 0) {
-                if (polyline1 != null)
-                    polyline1.setMap(map);
-            } else if (k === 1) {
-                if (polyline2 != null)
-                    polyline2.setMap(map);
-            } else if (k === 2) {
-                if (polyline3 != null)
-                    polyline3.setMap(map);
-            } else if (k === 3) {
-                if (polyline4 != null)
-                    polyline4.setMap(map);
-            } else if (k === 4) {
-                if (polyline5 != null)
-                    polyline5.setMap(map);
-            }
-        }
-        removCnt = 0;
     }
 
     async function handleOnClick (e, i) {
         getRemove();
         drawPoly(i);
-        console.log(ways[i]);
+    }
 
-    };
+    function buttonColor(index) {
+        for(var i = 0; i < position.length; i++) {
+            document.getElementById("locBtn"+i).style.backgroundColor= "white";
+            document.getElementById("locBtn"+i).style.color= "black";
+        }
+        document.getElementById("locBtn"+index).style.backgroundColor = "#879B6D";
+        document.getElementById("locBtn"+index).style.color= "white";
+    }
 
     function buttonSelect(e, i){
+        const startPoint = position[i].Id;
         getRemove();
-        console.log(position[i]);
-        const startPoint = "startX=" + position[i].x + "&" + "startY=" + position[i].y;
         getData(startPoint);
-
+        buttonColor(i);
     }
+    
 
     return(
     <div>
@@ -361,10 +328,16 @@ function Search_Box () {
                     {wayTime.map((data, index) => (
                         <div key={index}>
                             <div onClick={e => handleOnClick(e, index)}>
-                                <h5>{index+1} . </h5>
-                                {transferName[index].map((obj, index) => (
-                                    <h5>  {obj.type} : {obj.laneName} &nbsp;소요시간: {obj.sectionTime}분</h5>
-                                ))}
+                                <h5> {index+1}. </h5>
+                                {transferName[index].map((obj, index2) => (
+                                    <div key={index2}>
+                                        <div id={"wayDetail"}>
+                                            <h6>{obj.type} : {obj.laneName}</h6>
+                                            <h6>출발지 : {obj.from}</h6>
+                                            <h6>도착지 : {obj.to}</h6>
+                                        </div>
+                                    </div>
+                                        ))}
                                 <h5>총소요시간 : {data}분</h5>
                                 <hr/>
                             </div>
@@ -373,14 +346,12 @@ function Search_Box () {
                 </div>
             </div>
         </div>
-        <div id={"button_list"}>
+        <div id={"button_list"} >
             {position.map((obj, index) => (
                 <div key={index}>
-                    <button onClick={e => buttonSelect(e, index)}>{obj.title}</button>
-
+                    <button id={"locBtn"+index} onClick={e => buttonSelect(e, index)}>{obj.title}</button>
                 </div>
             ))}
-
         </div>
     </div>
     )

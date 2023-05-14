@@ -58,7 +58,7 @@ const Address = ({ searchPlace }, {option, changeOptin}) => {
 
     var geocoder = new kakao.maps.services.Geocoder();
 
-   const handleOnClick = (e, i) => {
+    const handleOnClick = (e, i) => {
         const addr = Places[i].address_name;
         console.log(addr);
         geocoder.addressSearch(addr, function(result, status) {
@@ -69,7 +69,7 @@ const Address = ({ searchPlace }, {option, changeOptin}) => {
                 var startY = coords.La;
                 document.getElementById("searchStartLocBt").value = startX;
                 document.getElementById("folderBoxTrue").value = startY;
-        }})
+            }})
         document.getElementById("result-list").style.display = 'none';
 
         document.getElementById("input").value = addr;

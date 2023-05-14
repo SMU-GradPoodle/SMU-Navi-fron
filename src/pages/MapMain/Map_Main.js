@@ -7,14 +7,18 @@ import Search from '../../component/SearchPlaces/Search';
 import axios from 'axios';
 import Address from '../../component/SearchPlaces/Address';
 import {useLocation} from "react-router-dom";
-
+import Footer from "../../component/Footer/Footer";
+import MenuBar from "../../component/MenuBar/MenuBar";
 const Map_Main = ({linePath}) => {
 
     return (
         <div className={"Main_wrap"}>
             <MainLogo className={"mainlogo"}/>
+            <hr id={"greenLine"}/>
+            <MenuBar />
             <div id='map' ></div>
-            <SearchBox />} />
+            <SearchBox />
+            <Footer />
         </div>
     );
 }
