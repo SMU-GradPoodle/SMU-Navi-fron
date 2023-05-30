@@ -36,7 +36,7 @@ function Write_traffic(){
             data: {
                 "title": trafficTitle,
                 "content": trafficContent,
-                "type" : decidedAccident,
+                "kind" : decidedAccident,
                 "location" : decidedSubway
             },
 

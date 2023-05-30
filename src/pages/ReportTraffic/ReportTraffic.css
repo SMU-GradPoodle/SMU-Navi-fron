@@ -1,14 +1,15 @@
 .Report_big_wrap{
     margin-left: 240px;
-    width: calc(100% - 290px);
+    width: calc(100% - 240px);
 }
 
 .Report_title_wrap > p{
-    width: 80%;
+    width: 90%;
+    line-height: 30px;
 }
 
 .Report_big_wrap > p{
-    width: 80%;
+    width: 90%;
 }
 
 .Report_wrap{
@@ -35,14 +36,16 @@
 }
 
 .Report_search_wrap{
-    margin-top: 10px;
+    width: 90%;
+    margin-top: 15px;
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 .Report_search{
+    height: auto;
     display: flex;
     flex-direction: row;
 }
@@ -50,16 +53,22 @@
 .Report_search > select{
     margin-right: 10px;
     padding: 8px 10px;
+    box-sizing: border-box;
+    margin-left: 15px;
 }
 
 .Report_search > button{
-    padding: 5px 10px;
+    width: 80px;
+    height: auto;
+    font-size: 16px;
 }
 
 .Report_list_wrap{
     border-top: 0.5px solid #879B6D;
     border-bottom: 0.5px solid #879B6D;
     margin-top: 40px;
+    width: 90%;
+    margin-bottom: 20px;
 }
 
 .Report_list_wrap > ul{
@@ -91,7 +100,9 @@
     border-radius: 4px;
     border: 1px solid black;
     padding: 8px 10px;
+    box-sizing: border-box;
     width: 65vw;
+    height: 100%;
 }
 
 .Report_wrap_content{
@@ -157,6 +168,7 @@
 .submitTrafficBtWrap{
     margin: 15px 0;
 }
+
 .submitTrafficBtWrap > button{
     font-size: 18px;
     padding: 5px 10px;
@@ -192,4 +204,50 @@
 
 .Report_detail_location > button{
     background-color: #89B8FF;
+}
+
+.Report_tap_top_wrap{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    margin-right: 120px;
+}
+
+#left_arrow, #right_arrow{
+    width: 40px;
+    height: 40px;
+    margin: auto 10px;
+    cursor: pointer;
+}
+
+.Report_tab_wrap{
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    max-width: 870px;
+    overflow: hidden;
+}
+
+.On_Move_WriteTraffic{
+    margin-top: 10px;
+    margin-right: 120px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#onMoveWriteReportBt, #onMoveTrafficListBt{
+    padding: 7px 15px;
+    background-color: #879B6D;
+    color: white;
+    border-radius: 10px;
+    border: 0;
+    font-size: 16px;
+}
+#onMoveWriteReportBt{
+    margin-left: 15px;
+ }
+
+.traffic_tab_box{
+    margin: 0;
 }
