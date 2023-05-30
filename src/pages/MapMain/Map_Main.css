@@ -3,6 +3,7 @@
     height: calc(100vh - 110px);
     margin: auto;
     padding: 0%;
+    overflow-x: hidden;
 }
 #greenLine{
     color: #879B6D;
@@ -11,7 +12,7 @@
 }
 
 #map{
-    transform: translate(20%, 0vh);
+    transform: translate(25%, 0vh);
     margin-bottom: -10vh;
     width: 70%;
     height: 76%;

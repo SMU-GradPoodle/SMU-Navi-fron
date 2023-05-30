@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import './Search_Box.css';
 import axios, {head} from 'axios';
-
+import styled from 'styled-components';
 const { kakao } = window;
 var polylines = [];
 
@@ -11,6 +11,9 @@ var polylines = [];
 var pos1 = new kakao.maps.LatLng(37.6744854, 127.0818506);  //ne
 var pos2 = new kakao.maps.LatLng(37.5211303, 126.7799154);  //sw
 var bounds = new kakao.maps.LatLngBounds(pos1, pos2);
+
+// var selectTitle = "";   //선택한 위치 title 저장
+
 
 function Search_Box () {
     const baseUrl = "http://localhost:8080/api/route/";
@@ -36,6 +39,8 @@ function Search_Box () {
     let myCnt = 5;
     //~영원히 안변할 변수
 
+    const [showInfo, setShowInfo] = useState([false, false, false, false, false]);
+
 
     function getRandomColor() {
         return '#' + Math.floor(Math.random() * 16777215).toString(16);
@@ -54,6 +59,7 @@ function Search_Box () {
     async function getRoute() {
         await axios.get("http://localhost:8080/api/route")
             .then((response) => {
+                console.log(response.data);
                 for (let k = 0; k < response.data.length; k++) {
                     position[k] = {
                         Id: response.data[k].startStationId,
@@ -71,8 +77,8 @@ function Search_Box () {
             })
     }
 
-     useEffect( async () => {
-         await getRoute();
+    useEffect( async () => {
+        await getRoute();
 
         const mapContainer = document.getElementById('map'), // 지도를 표시할 div
             mapOption = {
@@ -86,25 +92,25 @@ function Search_Box () {
         map.setMaxLevel(8);
         setMap(map);
 
-         var constrainBounds = function() {
-             var center = map.getCenter();
+        var constrainBounds = function() {
+            var center = map.getCenter();
 
-             var clipLat, clipLng, sw, ne;
+            var clipLat, clipLng, sw, ne;
 
-             if (!bounds.contain(center)) {
+            if (!bounds.contain(center)) {
 
-                 sw = bounds.getSouthWest();
-                 ne = bounds.getNorthEast();
+                sw = bounds.getSouthWest();
+                ne = bounds.getNorthEast();
 
-                 clipLat = Math.min(Math.max(sw.getLat(), center.getLat()), ne.getLat());
-                 clipLng = Math.min(Math.max(sw.getLng(), center.getLng()), ne.getLng());
+                clipLat = Math.min(Math.max(sw.getLat(), center.getLat()), ne.getLat());
+                clipLng = Math.min(Math.max(sw.getLng(), center.getLng()), ne.getLng());
 
-                 map.setCenter(new kakao.maps.LatLng(clipLat, clipLng));
-             }
-         };
+                map.setCenter(new kakao.maps.LatLng(clipLat, clipLng));
+            }
+        };
 
-         kakao.maps.event.addListener( map, 'drag', constrainBounds);
-         kakao.maps.event.addListener( map, 'zoom_changed', constrainBounds);
+        kakao.maps.event.addListener( map, 'drag', constrainBounds);
+        kakao.maps.event.addListener( map, 'zoom_changed', constrainBounds);
         position.map((p, idx) => {
 
             var marker = new kakao.maps.Marker({
@@ -119,19 +125,17 @@ function Search_Box () {
 
 
             kakao.maps.event.addListener(marker, 'click', async function Click ()  {
+                // selectTitle = p.title;
+                resetInfoState();
                 getRemove();
                 await axios
                     .get(baseUrl + p.Id)
                     .then((response) => {
+                        console.log(response)
                         let newWays = [];
                         let newTransferName = [];
                         let newWayTime = [];
 
-                        // for (var i = 0; i < prePathCnt; i++) {
-                        //     delete ways[i]
-                        //     delete transferName[i]
-                        //     delete wayTime[i]
-                        // }
                         prePathCnt = response.data.pathInfoCnt;
 
                         for(var i = 0; i < response.data.pathInfoCnt; i++) {
@@ -145,9 +149,7 @@ function Search_Box () {
                             newTransferName[k] = [];
                             item1.subPathList.forEach(function(item2){
                                 newTransferName[k] = newTransferName[k].concat(item2);
-                                console.log(item2);
                             })
-                            // wayTime[k] =  item1.time;
                             newWayTime[k] = item1.time;
                         })
                         setWays(newWays);
@@ -158,13 +160,19 @@ function Search_Box () {
                             polylines[i].setPath([]);
                             polylines[i].setMap(null);
                         }
-
                         console.log(newWays)
                         newWays[0].subPathList.forEach(function(item1,i){
                             point = []
-                            item1.gpsDetail.forEach(function(item2,j){
-                                point[j] = {La: item2.gpsX, Ma: item2.gpsY}
-                            });
+                            if(item1.transitType == "WALK"){
+                                item1.stationList.forEach(function(item2,j){
+                                    point[j] = {La: item2.gpsX, Ma: item2.gpsY}
+                                });
+                            }
+                            else{
+                                item1.gpsDetail.forEach(function(item2,j){
+                                    point[j] = {La: item2.gpsX, Ma: item2.gpsY}
+                                });
+                            }
                             transfer[i] = item1;
 
                             linePath = [];
@@ -172,13 +180,36 @@ function Search_Box () {
                             point.map((item, index) => {
                                 linePath[index] = new kakao.maps.LatLng(item.Ma, item.La);
                             })
-
-                            console.log(linePath)
+                            console.log(linePath);
+                            polylines[i].setPath(null);
                             polylines[i].setPath(linePath);
                             myCnt++;
                         });
 
                         for (let k = 0; k < preSubPathCnt; k++) {
+                            if(newWays[0].subPathList[k].transitType == "WALK"){
+                                polylines[k].setOptions({
+                                    strokeColor: 'black',
+                                    strokeStyle: 'dash',
+                                    strokeWeight: 2,
+                                });
+                            }
+                            else if(newWays[0].subPathList[k].transitType == "BUS"){
+                                polylines[k].setOptions({
+                                    strokeColor: '#0ABB0C',
+                                    strokeStyle: 'solid',
+                                    strokeWeight: 4,
+                                });
+                            }
+                            else if(newWays[0].subPathList[k].transitType == "SUBWAY"){
+                                polylines[k].setOptions({
+                                    strokeColor: '#FF7A00',
+                                    strokeStyle: 'solid',
+                                    strokeWeight: 4,
+                                });
+                            }
+                            console.log(newWays[0].subPathList[k].transitType)
+                            console.log(polylines[k]);
                             polylines[k].setMap(map);
                         }
 
@@ -204,11 +235,6 @@ function Search_Box () {
                 let newTransferName = [];
                 let newWayTime = [];
 
-                // for (var i = 0; i < prePathCnt; i++) {
-                //     delete ways[i]
-                //     delete transferName[i]
-                //     delete wayTime[i]
-                // }
                 prePathCnt = response.data.pathInfoCnt;
 
                 for(var i = 0; i < response.data.pathInfoCnt; i++) {
@@ -222,7 +248,6 @@ function Search_Box () {
                         newTransferName[k] = newTransferName[k].concat(item2);
                         console.log(item2);
                     })
-                    // wayTime[k] =  item1.time;
                     newWayTime[k] = item1.time;
                 })
                 setWays(newWays);
@@ -239,9 +264,16 @@ function Search_Box () {
                 console.log(newWays)
                 newWays[0].subPathList.forEach(function(item1,i){
                     point = []
-                    item1.gpsDetail.forEach(function(item2,j){
-                        point[j] = {La: item2.gpsX, Ma: item2.gpsY}
-                    });
+                    if(item1.transitType == "WALK"){
+                        item1.stationList.forEach(function(item2,j){
+                            point[j] = {La: item2.gpsX, Ma: item2.gpsY}
+                        });
+                    }
+                    else{
+                        item1.gpsDetail.forEach(function(item2,j){
+                            point[j] = {La: item2.gpsX, Ma: item2.gpsY}
+                        });
+                    }
                     transfer[i] = item1;
 
                     linePath = [];
@@ -256,6 +288,27 @@ function Search_Box () {
                 });
 
                 for (let k = 0; k < preSubPathCnt; k++) {
+                    if(newWays[0].subPathList[k].transitType == "WALK"){
+                        polylines[k].setOptions({
+                            strokeColor: 'black',
+                            strokeStyle: 'dash',
+                            strokeWeight: 2,
+                        });
+                    }
+                    else if(newWays[0].subPathList[k].transitType == "BUS"){
+                        polylines[k].setOptions({
+                            strokeColor: '#0ABB0C',
+                            strokeStyle: 'solid',
+                            strokeWeight: 4,
+                        });
+                    }
+                    else if(newWays[0].subPathList[k].transitType == "SUBWAY"){
+                        polylines[k].setOptions({
+                            strokeColor: '#FF7A00',
+                            strokeStyle: 'solid',
+                            strokeWeight: 4,
+                        });
+                    }
                     polylines[k].setMap(map);
                 }
             })
@@ -275,19 +328,42 @@ function Search_Box () {
     function drawPoly(w) {
         mysCnt = ways[w].subPathList.length;
         for (var i = 0; i < ways[w].subPathList.length; i++) {
-            // transfer.length = ways[w].subPathList.length;
             transfer[i] = ways[w].subPathList[i];
-
             linePath = []
-            // for (var j = 0; j < transfer[i].stationList.length; j++) {
-            //     point[j] = {La: transfer[i].stationList[j].gpsX, Ma: transfer[i].stationList[j].gpsY}
-            // }
-
-            transfer[i].gpsDetail.map((item, index) => {
-                linePath[index] = new kakao.maps.LatLng(item.gpsY, item.gpsX);
-            })
-            // polylines[i].setPath(null);
-            // polylines[i].setMap(null);
+            if(ways[w].subPathList[i].transitType == "WALK"){
+                // transfer[i].stationList.forEach(function(item,j){
+                //     linePath[i] = new kakao.maps.LatLng(item.gpsY, item.gpsX);
+                // });
+                transfer[i].stationList.map((item,idx) => {
+                    linePath[idx] = new kakao.maps.LatLng(item.gpsY, item.gpsX);
+                })
+            }
+            else{
+                transfer[i].gpsDetail.map((item, index) => {
+                    linePath[index] = new kakao.maps.LatLng(item.gpsY, item.gpsX);
+                })
+            }
+            if(ways[w].subPathList[i].transitType == "WALK"){
+                polylines[i].setOptions({
+                    strokeColor: 'black',
+                    strokeStyle: 'dashd',
+                    strokeWeight: 2,
+                });
+            }
+            else if(ways[w].subPathList[i].transitType == "BUS"){
+                polylines[i].setOptions({
+                    strokeColor: '#0ABB0C',
+                    strokeStyle: 'solid',
+                    strokeWeight: 4,
+                });
+            }
+            else if(ways[w].subPathList[i].transitType == "SUBWAY"){
+                polylines[i].setOptions({
+                    strokeColor: '#FF7A00',
+                    strokeStyle: 'solid',
+                    strokeWeight: 4,
+                });
+            }
             polylines[i].setPath(linePath);
         }
 
@@ -310,50 +386,153 @@ function Search_Box () {
         document.getElementById("locBtn"+index).style.color= "white";
     }
 
+
+    function resetInfoState() {
+        showInfo.forEach(function(item,k){
+            item = false;
+        })
+        setShowInfo(showInfo);
+    }
+
     function buttonSelect(e, i){
+        resetInfoState();
+        // selectTitle = position[i].title;
         const startPoint = position[i].Id;
         getRemove();
         getData(startPoint);
         buttonColor(i);
+
+        var resetShowInfo = showInfo.map((item, idx) => //상세보기&접기 초기화
+            item = false
+        )
+        setShowInfo(resetShowInfo);
     }
+
+    //progressBar component 따로 생성, {이용수단 type, 이용시간, 환승횟수, 도보시간} 전달
+    //map으로 환승할 때마다 그리게 해서 겹치게 만들기
+    //환승회차에 따라 시간 비율 정해서 transform: translate로 x좌표 늘려주기.
     
 
-    return(
-    <div>
-        <div className={"search-wrapper"}>
-            <div id={"Search_box_title"}><h3>상세경로</h3></div>
-            <div id={"underBar"}/>
+    function progress(index) {
+        return(
+            <div id = {"progress"}>
+                {transferName[index].map((obj, index3) => (
+                    <span id={"wayProgress"} key={index3}>
+                        <span id={ways[index].subPathList[index3].transitType} style={{width:((obj.sectionTime/10*4 + 9)/ways[index].time*95)+"%" }}><span><img  id={"icon"} src={require(`../../img/${ways[index].subPathList[index3].transitType}.png`)} /></span><span id={"busdiv"}><p id={"min"}>{obj.sectionTime}분</p></span> </span>
+                    </span>
+                ))}
+            </div>
+        )
+    }
+
+    function info(){
+        return(
             <div id="ways-list-wrapper">
                 <div id="ways-list">
                     {wayTime.map((data, index) => (
                         <div key={index}>
                             <div onClick={e => handleOnClick(e, index)}>
-                                <h5> {index+1}. </h5>
-                                {transferName[index].map((obj, index2) => (
-                                    <div key={index2}>
-                                        <div id={"wayDetail"}>
-                                            <h6>{obj.type} : {obj.laneName}</h6>
-                                            <h6>출발지 : {obj.from}</h6>
-                                            <h6>도착지 : {obj.to}</h6>
-                                        </div>
-                                    </div>
-                                        ))}
-                                <h5>총소요시간 : {data}분</h5>
+                                {bestWay(index)}
+                                <p id={"time"}>{data}분</p>
+                                {progress(index)}
+                                {infoDetail(index)}
+                                {showInfoDetail(index)}
                                 <hr/>
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
+        )
+    }
+
+    function bestWay(index) {
+        if(index == 0)
+            return(
+                <p id={"bestWay"}>최적 경로</p>
+            )
+    }
+
+    function infoDetail(index) {
+        if(showInfo[index] == false) {
+            return (
+                <>
+                    {transferName[index].map((obj, index2) => (
+                        <div key={index2}>
+                            <div id={"wayDetail"}>
+                                <h6 >{obj.laneName}</h6>
+                                <h6>하차 {obj.to}</h6>
+                            </div>
+                        </div>
+                    ))}
+                </>
+            )
+        }
+        else{
+            console.log(position[index]);
+            return (
+                <>
+                    {transferName[index].map((obj, index2) => (
+                        <div key={index2}>
+                            <div id={"wayDetail"}>
+                                {/*<h6>출발 {selectTitle}</h6>*/}
+                                <h6>승차 {obj.from}</h6>
+                                <h6>{obj.laneName}</h6>
+                                <h6>하차 {obj.to}</h6>
+                            </div>
+                        </div>
+                    ))}
+                </>
+            )
+        }
+    }
+
+    function showInfoDetail(index) {
+        if(showInfo[index] == false) {
+            return(
+                <>
+                    <p id={"showInfo"} onClick={e => changeInfoState(e, index)}>상세보기</p>
+                </>
+            )
+        }
+        else
+        {
+            return(
+                <>
+                    <p id={"showInfo"} onClick={e => changeInfoState(e, index)}>접기</p>
+                </>
+            )
+        }
+
+    }
+
+    function changeInfoState(e, index){
+        if(showInfo[index] == false)
+            var newShowInfo = showInfo.map((item , idx) =>
+                idx === index ? true : item,
+            );
+        else
+            newShowInfo = showInfo.map((item , idx) =>
+                idx === index ? false : item,
+            );
+        setShowInfo(newShowInfo);
+    }
+
+
+    return(
+        <div>
+            <div className={"search-wrapper"}>
+                <div id={"Search_box_title"}><p>상세경로</p></div>
+                {info()}
+            </div>
+            <div id={"button_list"} >
+                {position.map((obj, index) => (
+                    <div key={index}>
+                        <button id={"locBtn"+index} onClick={e => buttonSelect(e, index)}>{obj.title}</button>
+                    </div>
+                ))}
+            </div>
         </div>
-        <div id={"button_list"} >
-            {position.map((obj, index) => (
-                <div key={index}>
-                    <button id={"locBtn"+index} onClick={e => buttonSelect(e, index)}>{obj.title}</button>
-                </div>
-            ))}
-        </div>
-    </div>
     )
 }
 
