@@ -80,11 +80,11 @@ function Detail_traffic(){
                 </div>
                 <div className={"Report_detail_type"}>
                     <p>종류</p>
-                    <button>시위</button>
+                    <button>{content.kind == 'demo' ? '시위' : content.kind == 'accident' ? '사고' :  content.kind == 'bus_full' ? '버스 만석' : content.kind == 'bypass' ? '우회' : '그외'}</button>
                 </div>
                 <div className={"Report_detail_location"}>
                     <p>위치</p>
-                    <button>경복궁</button>
+                    <button>{content.location == 'Gwanghwamun' ? '광화문' : content.location == 'Gyeongbokgung' ? '경복궁' : content.location == 'CityHall' ? '시청역' : content.location == 'subway' ? '지하철' : '그외'}</button>
                 </div>
                 <div className={"Report_wrap_content"}>
                     <p>{content.content}</p>
@@ -92,12 +92,12 @@ function Detail_traffic(){
                         <div onClick={onHeartLike}>
                             <p>동의하기</p>
                             <img src={heartLike}/>
-                            <p>{content.likes}</p>
+                            <p>{content.countLike}</p>
                         </div>
                         <div onClick={onHeartHate}>
                             <p>반대하기</p>
                             <img src={heartHate}/>
-                            <p>{content.hates}</p>
+                            <p>{content.countHate}</p>
                         </div>
                     </div>
                 </div>

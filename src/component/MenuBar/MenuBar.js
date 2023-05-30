@@ -27,7 +27,7 @@ function MenuBar(){
                 <p className={"BarMenu"}>Menu</p>
             </div>
             <div className={"MenuBarLineWrap"}>
-                <Link to={'/map_main'} id={isTrafficClicked} onClick={onClickReport} style={{textDecoration: 'none', color: 'black'}}>
+                <Link to={'/main'} id={isTrafficClicked} onClick={onClickReport} style={{textDecoration: 'none', color: 'black'}}>
                     <p className={"BarTraffic"}>대중교통 지도</p>
                 </Link>
             </div>
@@ -39,11 +39,6 @@ function MenuBar(){
             <div className={"MenuBarLineWrap"}>
                 <Link to={'/take_taxi'} id={isTaxiClicked} onClick={onClickTaxi} style={{textDecoration: 'none', color: 'black'}}>
                     <p className={"BarTaxi"}>택시 같이 타기</p>
-                </Link>
-            </div>
-            <div className={"MenuBarLineWrap"}>
-                <Link to={'/notice'} id={isNoticeClicked} onClick={onClickNotice} style={{textDecoration: 'none', color: 'black'}}>
-                    <p className={"BarNotice"}>공지사항</p>
                 </Link>
             </div>
         </div>
