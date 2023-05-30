@@ -1,0 +1,20 @@
+#traffic{
+    position: absolute;
+    width: 12vw;
+    height: 30vh;
+    border: 1px solid #879B6D;
+    transform: translate(1vw, 35vh);
+    display: inline-block;
+}
+
+#pngwing{
+    width: 3vw;
+    height: 3vw;
+    position: absolute;
+    transform: translate(0.5vw, 2.5vh);
+}
+
+#traffic_title {
+    transform: translate(3.5vw, 0vh);
+    font-size: 1.8vw;
+}

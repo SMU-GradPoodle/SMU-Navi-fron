@@ -9,6 +9,7 @@ import Address from '../../component/SearchPlaces/Address';
 import {useLocation} from "react-router-dom";
 import Footer from "../../component/Footer/Footer";
 import MenuBar from "../../component/MenuBar/MenuBar";
+import TrafficInfo from "../../component/TrafficInfo/TrafficInfo";
 const Map_Main = ({linePath}) => {
 
     return (
@@ -16,6 +17,7 @@ const Map_Main = ({linePath}) => {
             <MainLogo className={"mainlogo"}/>
             <hr id={"greenLine"}/>
             <MenuBar />
+            <TrafficInfo />
             <div id='map' ></div>
             <SearchBox />
             <Footer />
