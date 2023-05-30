@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import MainLogo from '../../component/MainLogo/Main_Logo';
 import Map from "../../component/Map/Map.js";
 import SearchBox from '../../component/SearchBox/Search_Box';
