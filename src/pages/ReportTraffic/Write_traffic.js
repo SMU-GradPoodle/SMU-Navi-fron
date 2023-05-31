@@ -9,6 +9,37 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Write_traffic(){
+    const [button, setButton] = useState([0]);
+
+    useEffect(() => {
+        async function fetchData() {
+            await axios
+                .get("http://localhost:8080/api/info/button")
+                .then((response) => {
+                    console.log(response.data[0])
+                    console.log(response)
+                    let newButton = [];
+
+
+                    for(var i = 0; i < response.data.length; i++) {
+                        newButton[i] = response.data[i];
+                    }
+                    // newWays.forEach(function(item1,k){
+                    //     newTransferName[k] = [];
+                    //     item1.subPathList.forEach(function(item2){
+                    //         newTransferName[k] = newTransferName[k].concat(item2);
+                    //     })
+                    //     newWayTime[k] = item1.time;
+                    // })
+                    setButton(newButton);
+
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+             fetchData();
+    }, []);
 
     const navigate = useNavigate();
     const [trafficTitle, setTrafficTitle] = useState("");
@@ -34,10 +65,15 @@ function Write_traffic(){
                 "Content-Type": `application/json`,
             },
             data: {
-                "title": trafficTitle,
-                "content": trafficContent,
-                "kind" : decidedAccident,
-                "location" : decidedSubway
+                // "title": trafficTitle,
+                // "content": trafficContent,
+                // "kind" : decidedAccident,
+                // "location" : decidedSubway
+                "transitType": "BUS", //BUS or SUBWAY
+                "kind": 1, //아래 Enum값 보고 맞춰서 보내주세요!
+                "stationId": "100000021", // /api/info/button에 나오는 stationID값으로 전송
+                "title": "Sample Title",
+                "content": "This is a sample content."
             },
 
         })
@@ -86,6 +122,21 @@ function Write_traffic(){
             idx === 0 ? 'Gwanghwamun' : idx === 1 ? 'Gyeongbokgung' : idx === 2 ? 'CityHall' : idx === 3 ? 'subway' : idx === 4 ? 'location_etc' : '',
         );
     }
+    function test() {
+        console.log(button)
+    }
+
+    function showStation(e, index) {
+
+        return (
+            <div>
+                {button[index].locationInfos.map((obj, idx) => (
+                    <div key={idx}>{obj.stationName}</div>
+                ))}
+            </div>
+        )
+
+    }
 
     return(
         <div>
@@ -111,15 +162,21 @@ function Write_traffic(){
                     </div>
                     <div className={"Location_category_wrap"}>
                         <p>위치</p>
-                        {subwayArr.map((elm, index) => (
-                            <Catebory_btn
-                                key={index}
-                                isSelected={selectedSubway === elm}
-                                handleClick={subwayCategoryClick}
-                                elementIndex={index}
-                                content={elm}
-                                backColor="#89B8FF"/>
+                        {button.map((item, idx) => (
+                            <div key={idx}>
+                                <button onClick={e => showStation(e, idx)}>{item.transitType}</button>
+                            </div>
                         ))}
+
+                        {/*{subwayArr.map((elm, index) => (*/}
+                        {/*    <Catebory_btn*/}
+                        {/*        key={index}*/}
+                        {/*        isSelected={selectedSubway === elm}*/}
+                        {/*        handleClick={subwayCategoryClick}*/}
+                        {/*        elementIndex={index}*/}
+                        {/*        content={elm}*/}
+                        {/*        backColor="#89B8FF"/>*/}
+                        {/*))}*/}
                     </div>
                     <div className={"picture_category_wrap"}>
                         <p>사진</p>
