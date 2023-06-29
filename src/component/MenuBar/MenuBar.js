@@ -21,13 +21,15 @@ function MenuBar(){
         setIsNoticeClicked('click');
     }
 
+
+
     return(
         <div className={"MenuBarWrap"}>
             <div className={"MenuBarLineWrap"}>
                 <p className={"BarMenu"}>Menu</p>
             </div>
             <div className={"MenuBarLineWrap"}>
-                <Link to={'/main'} id={isTrafficClicked} onClick={onClickReport} style={{textDecoration: 'none', color: 'black'}}>
+                <Link to={'/'} id={isTrafficClicked} onClick={onClickReport} style={{textDecoration: 'none', color: 'black'}}>
                     <p className={"BarTraffic"}>대중교통 지도</p>
                 </Link>
             </div>
