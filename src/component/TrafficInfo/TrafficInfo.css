@@ -3,20 +3,20 @@
     width: 12vw;
     height: 30vh;
     border: 1px solid #879B6D;
-    transform: translate(1vw, 35vh);
+    transform: translate(1vw, 0vh);
     display: inline-block;
 }
 
 #pngwing{
-    width: 3vw;
-    height: 3vw;
+    width: 2.8vw;
+    height: 2.8vw;
     position: absolute;
-    transform: translate(0.5vw, 2.5vh);
+    transform: translate(0.5vw, 3vh);
 }
 
 #traffic_title {
-    transform: translate(3.5vw, 0vh);
-    font-size: 1.8vw;
+    transform: translate(3.7vw, 0vh);
+    font-size: 20px;
 }
 
 #infoData {
