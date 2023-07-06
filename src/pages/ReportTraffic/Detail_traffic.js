@@ -17,7 +17,7 @@ function Detail_traffic(){
     useEffect( () => {
         axios({
             method: 'get',
-            url: 'http://localhost:8080/api/info/' + id,
+            url: 'http://smu-navi.ap-northeast-2.elasticbeanstalk.com/api/info/' + id,
             headers: {
                 "Content-Type": "application/json"
             },
@@ -34,7 +34,7 @@ function Detail_traffic(){
     function onHeartLike(){
         axios({
             method: 'get',
-            url: 'http://localhost:8080/api/info/1/likes',
+            url: 'http://smu-navi.ap-northeast-2.elasticbeanstalk.com/api/info/1/likes',
             headers: {
                 "Content-Type": "application/json"
             },

@@ -1,44 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './ReportTraffic.css';
 import MainLogo from '../../component/MainLogo/Main_Logo';
 import MenuBar from '../../component/MenuBar/MenuBar';
-import Board_list from '../../component/Board_list/Board_list';
 import Catebory_btn from '../../component/Category_btn/Catebory_btn';
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-function Write_traffic(){
-    const [button, setButton] = useState([0]);
+function Write_traffic() {
+    const [subwayList, setSubwayList] = useState([]);
+    const [busList, setBusList] = useState([]);
 
     useEffect(() => {
         async function fetchData() {
-            await axios
-                .get("http://localhost:8080/api/info/button")
-                .then((response) => {
-                    console.log(response.data[0])
-                    console.log(response)
-                    let newButton = [];
+            try {
+                const response = await axios.get("http://smu-navi.ap-northeast-2.elasticbeanstalk.com/api/info/button");
+                const subwayInfos = response.data.find(info => info.transitType === '지하철');
+                const subwayStations = subwayInfos ? subwayInfos.locationInfos.map(station => station.stationName) : [];
+                setSubwayList(subwayStations);
 
-
-                    for(var i = 0; i < response.data.length; i++) {
-                        newButton[i] = response.data[i];
-                    }
-                    // newWays.forEach(function(item1,k){
-                    //     newTransferName[k] = [];
-                    //     item1.subPathList.forEach(function(item2){
-                    //         newTransferName[k] = newTransferName[k].concat(item2);
-                    //     })
-                    //     newWayTime[k] = item1.time;
-                    // })
-                    setButton(newButton);
-
-                })
-                .catch((error) => {
-                    console.log(error);
-                })
+                const busInfos = response.data.find(info => info.transitType === '버스');
+                const busStations = busInfos ? busInfos.locationInfos.map(station => station.stationName) : [];
+                setBusList(busStations);
+            } catch (error) {
+                console.log(error);
+            }
         }
-             fetchData();
+        fetchData();
     }, []);
 
     const navigate = useNavigate();
@@ -48,34 +35,26 @@ function Write_traffic(){
     const onTrafficTitleHandler = (event) => {
         setTrafficTitle(event.currentTarget.value);
     }
+
     const onTrafficContentHandler = (event) => {
         setTrafficContent(event.currentTarget.value);
     }
 
-
     const onSubmitTraffic = (event) => {
-        // 버튼만 누르면 리로드 되는것을 막아줌
         event.preventDefault();
-
-        // POST 요청으로 로그인
         axios({
             method: "post",
-            url: "http://localhost:8080/api/info",
+            url: "http://smu-navi.ap-northeast-2.elasticbeanstalk.com/api/info",
             headers: {
                 "Content-Type": `application/json`,
             },
             data: {
-                // "title": trafficTitle,
-                // "content": trafficContent,
-                // "kind" : decidedAccident,
-                // "location" : decidedSubway
-                "transitType": "BUS", //BUS or SUBWAY
-                "kind": 1, //아래 Enum값 보고 맞춰서 보내주세요!
-                "stationId": "100000021", // /api/info/button에 나오는 stationID값으로 전송
-                "title": "Sample Title",
+                "transitType": "BUS",
+                "kind": 1,
+                "stationId": "100000021",
+                "title": "ㅜew",
                 "content": "This is a sample content."
             },
-
         })
             .then((res) => {
                 alert('교통 제보 완료');
@@ -86,59 +65,33 @@ function Write_traffic(){
             });
     }
 
-    //사용자가 선택할 카테고리 저장
     const accidentArr = ['시위', '사고', '버스만석', '우회', '그외'];
-    const subwayArr = ['광화문', '경복궁', '시청역', '지하철', '그외'];
+    const subwayArr = ['지하철', '버스'];
 
     const [selectedAccident, setSelectedAccident] = useState('');
     const [selectedSubway, setSelectedSubway] = useState('');
 
-    const [selectedAccidentType, setSelectedAccidentType] = useState(true);
-    const [selectedSubwayType, setSelectedSubwayType] = useState(true);
-
-    const [decidedAccident, setDecidedAccident] = useState('');
-    const [decidedSubway, setDecidedSubway] = useState('');
-
-
-    function onChangeType(){
-        if(selectedAccident === '시위'){
-            setDecidedAccident('demo');
-        }
-    }
     const accidentCategoryClick = idx => {
         setSelectedAccident(
             idx === 0 ? '시위' : idx === 1 ? '사고' : idx === 2 ? '버스만석' : idx === 3 ? '우회' : idx === 4 ? '그외' : '',
-        );
-        setDecidedAccident(
-            idx === 0 ? 'demo' : idx === 1 ? 'accident' : idx === 2 ? 'bus_full' : idx === 3 ? 'bypass' : idx === 4 ? 'category_etc' : '',
         );
     }
 
     const subwayCategoryClick = idx => {
         setSelectedSubway(
-            idx === 0 ? '광화문' : idx === 1 ? '경복궁' : idx === 2 ? '시청역' : idx === 3 ? '지하철' : idx === 4 ? '그외' : '',
-        );
-        setDecidedSubway(
-            idx === 0 ? 'Gwanghwamun' : idx === 1 ? 'Gyeongbokgung' : idx === 2 ? 'CityHall' : idx === 3 ? 'subway' : idx === 4 ? 'location_etc' : '',
+            idx === 0 ? '지하철' : '버스'
         );
     }
-    function test() {
-        console.log(button)
-    }
 
-    function showStation(e, index) {
+    const handleSubwayClick = (station) => {
+        setSelectedSubway(station);
+    };
 
-        return (
-            <div>
-                {button[index].locationInfos.map((obj, idx) => (
-                    <div key={idx}>{obj.stationName}</div>
-                ))}
-            </div>
-        )
+    const handleBusClick = (station) => {
+        setSelectedSubway(station);
+    };
 
-    }
-
-    return(
+    return (
         <div>
             <MainLogo />
             <MenuBar />
@@ -157,36 +110,56 @@ function Write_traffic(){
                                 handleClick={accidentCategoryClick}
                                 elementIndex={index}
                                 content={elm}
-                                backColor="#FFB800"/>
+                                backColor="#FFB800"
+                            />
                         ))}
                     </div>
                     <div className={"Location_category_wrap"}>
                         <p>위치</p>
-                        {button.map((item, idx) => (
-                            <div key={idx}>
-                                <button onClick={e => showStation(e, idx)}>{item.transitType}</button>
-                            </div>
+                        {subwayArr.map((elm, index) => (
+                            <Catebory_btn
+                                key={index}
+                                isSelected={selectedSubway === elm}
+                                handleClick={subwayCategoryClick}
+                                elementIndex={index}
+                                content={elm}
+                                backColor="#89B8FF"
+                            />
                         ))}
-
-                        {/*{subwayArr.map((elm, index) => (*/}
-                        {/*    <Catebory_btn*/}
-                        {/*        key={index}*/}
-                        {/*        isSelected={selectedSubway === elm}*/}
-                        {/*        handleClick={subwayCategoryClick}*/}
-                        {/*        elementIndex={index}*/}
-                        {/*        content={elm}*/}
-                        {/*        backColor="#89B8FF"/>*/}
-                        {/*))}*/}
                     </div>
                     <div className={"picture_category_wrap"}>
-                        <p>사진</p>
-                        <Catebory_btn
-                            content="등록하기"
-                            backColor="#B1B1B1"/>
+                        <p>위치</p>
+                        {selectedSubway === '지하철' ? (
+                            subwayList.map((elm, index) => (
+                                <Catebory_btn
+                                    key={index}
+                                    isSelected={selectedSubway === elm}
+                                    handleClick={() => handleSubwayClick(elm)}
+                                    elementIndex={index}
+                                    content={elm}
+                                    backColor="#89B8FF"
+                                />
+                            ))
+                        ) : (
+                            busList.map((elm, index) => (
+                                <Catebory_btn
+                                    key={index}
+                                    isSelected={selectedSubway === elm}
+                                    handleClick={() => handleBusClick(elm)}
+                                    elementIndex={index}
+                                    content={elm}
+                                    backColor="#89B8FF"
+                                />
+                            ))
+                        )}
                     </div>
                     <div className={"content_category_wrap"}>
                         <p>내용</p>
-                        <textarea type={"text"} placeholder={"허위 제보가 누락되면 강제 탈퇴당할 수 있습니다"} onChange={onTrafficContentHandler} ></textarea>
+                        <textarea
+                            type="text"
+                            placeholder="허위 제보가 누락되면 강제 탈퇴당할 수 있습니다"
+                            onChange={onTrafficContentHandler}
+                        ></textarea>
                     </div>
                 </div>
                 <div className={"submitTrafficBtWrap"}>
@@ -194,7 +167,7 @@ function Write_traffic(){
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 export default Write_traffic;

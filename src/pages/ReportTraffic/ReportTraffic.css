@@ -1,10 +1,10 @@
 .Report_big_wrap{
-    margin-left: 240px;
-    width: calc(100% - 240px);
+    width: 85%;
+    margin: 0 auto;
 }
 
 .Report_title_wrap > p{
-    width: 90%;
+    width: 100%;
     line-height: 30px;
 }
 
