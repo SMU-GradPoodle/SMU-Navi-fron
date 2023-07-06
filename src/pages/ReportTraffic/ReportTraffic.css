@@ -10,6 +10,13 @@
 
 .Report_big_wrap > p{
     width: 90%;
+    margin-top: 20px;
+}
+
+.Repost_wrap1{
+    border-top: 0.5px solid #879B6D;
+    width: 95%;
+    margin-top: 20px;
 }
 
 .Report_wrap{

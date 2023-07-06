@@ -4,6 +4,7 @@ import MainLogo from '../../component/MainLogo/Main_Logo';
 import Map from "../../component/Map/Map.js";
 import SearchBox from '../../component/SearchBox/Search_Box';
 import './Map_Main.css';
+import Line from '../../component/Line/Line';
 // import Search from '../../component/SearchPlaces/Search';
 import axios from 'axios';
 // import Address from '../../component/SearchPlaces/Address';
@@ -16,8 +17,7 @@ const Map_Main = ({linePath}) => {
     return (
         <div className={"Main_wrap"}>
             <MainLogo className={"mainlogo"}/>
-            <hr id={"greenLine"}/>
-            <MenuBar />
+            <Line/>
             <TrafficInfo />
             <div id='map' ></div>
             <SearchBox />

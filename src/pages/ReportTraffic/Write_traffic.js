@@ -5,10 +5,13 @@ import MenuBar from '../../component/MenuBar/MenuBar';
 import Catebory_btn from '../../component/Category_btn/Catebory_btn';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Line from '../../component/Line/Line.js';
 
 function Write_traffic() {
     const [subwayList, setSubwayList] = useState([]);
     const [busList, setBusList] = useState([]);
+    const [subwayIdList, setSubwayIdList] = useState([]);
+    const [busIdList, setBusIdList] = useState([]);
 
     useEffect(() => {
         async function fetchData() {
@@ -16,11 +19,16 @@ function Write_traffic() {
                 const response = await axios.get("http://smu-navi.ap-northeast-2.elasticbeanstalk.com/api/info/button");
                 const subwayInfos = response.data.find(info => info.transitType === '지하철');
                 const subwayStations = subwayInfos ? subwayInfos.locationInfos.map(station => station.stationName) : [];
+                const subwayStationIds = subwayInfos ? subwayInfos.locationInfos.map(station => station.stationId) : [];
                 setSubwayList(subwayStations);
+                setSubwayIdList(subwayStationIds);
 
                 const busInfos = response.data.find(info => info.transitType === '버스');
                 const busStations = busInfos ? busInfos.locationInfos.map(station => station.stationName) : [];
+                const busStationIds = busInfos ? busInfos.locationInfos.map(station => station.stationId) : [];
                 setBusList(busStations);
+                setBusIdList(busStationIds);
+
             } catch (error) {
                 console.log(error);
             }
@@ -41,7 +49,10 @@ function Write_traffic() {
     }
 
     const onSubmitTraffic = (event) => {
+        console.log(busList);
+        console.log(subwayList);
         event.preventDefault();
+
         axios({
             method: "post",
             url: "http://smu-navi.ap-northeast-2.elasticbeanstalk.com/api/info",
@@ -49,51 +60,58 @@ function Write_traffic() {
                 "Content-Type": `application/json`,
             },
             data: {
-                "transitType": "BUS",
-                "kind": 1,
-                "stationId": "100000021",
-                "title": "ㅜew",
-                "content": "This is a sample content."
+                "transitType": selectedSubway,
+                "kind": selectedAccident,
+                "stationId": selectedSubwayId,
+                "title": trafficTitle,
+                "content": trafficContent
             },
         })
-            .then((res) => {
-                alert('교통 제보 완료');
-                navigate('/report_traffic');
-            })
-            .catch((error) => {
-                alert('교통 제보 실패');
-            });
+        .then((res) => {
+            alert('교통 제보 완료');
+            navigate('/report_traffic');
+        })
+        .catch((error) => {
+            alert('엥?');
+        });
+
     }
 
     const accidentArr = ['시위', '사고', '버스만석', '우회', '그외'];
-    const subwayArr = ['지하철', '버스'];
+    const subwayArr = ['버스', '지하철'];
 
-    const [selectedAccident, setSelectedAccident] = useState('');
-    const [selectedSubway, setSelectedSubway] = useState('');
+    const [selectedAccident, setSelectedAccident] = useState(0);
+    const [selectedSubway, setSelectedSubway] = useState(0);
+    const [selectedSubwayId, setSelectedSubwayId] = useState('');
+
+    const [selectedSubwayStation, setSelectedSubwayStation] = useState('');
+    const [selectedBusStation, setSelectedBusStation] = useState('');
 
     const accidentCategoryClick = idx => {
-        setSelectedAccident(
-            idx === 0 ? '시위' : idx === 1 ? '사고' : idx === 2 ? '버스만석' : idx === 3 ? '우회' : idx === 4 ? '그외' : '',
-        );
-    }
+        setSelectedAccident(idx + 1);
+    };
 
     const subwayCategoryClick = idx => {
         setSelectedSubway(
-            idx === 0 ? '지하철' : '버스'
+            idx === 0 ? 'BUS' : 'SUBWAY'
         );
     }
 
-    const handleSubwayClick = (station) => {
-        setSelectedSubway(station);
+    const handleSubwayClick = (index) => {
+        setSelectedSubwayStation(subwayList[index]);
+        setSelectedSubwayId(subwayIdList[index]);
     };
 
-    const handleBusClick = (station) => {
-        setSelectedSubway(station);
+    const handleBusClick = (index) => {
+        setSelectedBusStation(busList[index]);
+        setSelectedSubwayId(busIdList[index]);
     };
+
 
     return (
         <div>
             <MainLogo />
+            <Line />
             <MenuBar />
             <div className={"Report_big_wrap"}>
                 <h2>제보하기</h2>
@@ -129,23 +147,23 @@ function Write_traffic() {
                     </div>
                     <div className={"picture_category_wrap"}>
                         <p>위치</p>
-                        {selectedSubway === '지하철' ? (
-                            subwayList.map((elm, index) => (
+                        {selectedSubway === '버스' ? (
+                            busList.map((elm, index) => (
                                 <Catebory_btn
                                     key={index}
-                                    isSelected={selectedSubway === elm}
-                                    handleClick={() => handleSubwayClick(elm)}
+                                    isSelected={selectedBusStation === elm}
+                                    handleClick={handleBusClick}
                                     elementIndex={index}
                                     content={elm}
                                     backColor="#89B8FF"
                                 />
                             ))
                         ) : (
-                            busList.map((elm, index) => (
+                            subwayList.map((elm, index) => (
                                 <Catebory_btn
                                     key={index}
-                                    isSelected={selectedSubway === elm}
-                                    handleClick={() => handleBusClick(elm)}
+                                    isSelected={selectedSubwayStation === elm}
+                                    handleClick={handleSubwayClick}
                                     elementIndex={index}
                                     content={elm}
                                     backColor="#89B8FF"

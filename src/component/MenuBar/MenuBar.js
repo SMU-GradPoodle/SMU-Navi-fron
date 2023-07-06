@@ -18,7 +18,7 @@ function MenuBar() {
                 </li>
                 <li>
                     <Link to="/take_taxi" className="navigation-link">
-                        택시같이타기
+                        꿀팁 보러가기
                     </Link>
                 </li>
             </ul>

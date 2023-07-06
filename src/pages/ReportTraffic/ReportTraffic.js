@@ -8,6 +8,7 @@ import React, { useState, useEffect, useParams } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './ReportTraffic.css';
+import Line from '../../component/Line/Line'
 
 function ReportTraffic(){
 
@@ -62,6 +63,7 @@ function ReportTraffic(){
     return(
         <div>
             <MainLogo />
+            <Line/>
             <MenuBar />
             <div className={"Report_big_wrap"}>
                 <div className={"Report_title_wrap"}>
