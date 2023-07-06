@@ -196,8 +196,8 @@
 }
 
 #isTraffic {
-    text-align: right;
-    transform: translate(-1%, -120%);
-    color: darkred;
-    font-size: small;
+    text-align: center;
+    transform: translate(-1%, 0%);
+    color: #da3c0d;
+    font-size: 12px;
 }
