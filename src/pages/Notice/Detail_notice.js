@@ -6,6 +6,7 @@ import Board_list from '../../component/Board_list/Board_list';
 import { useState, useEffect} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import Line from '../../component/Line/Line'
 
 function Detail_notice(){
     const { id } = useParams();
@@ -45,6 +46,7 @@ function Detail_notice(){
     return(
         <div className={"Notice_wrap"}>
             <MainLogo />
+            <Line/>
             <MenuBar />
             <div className={"Notice_title_wrap"}>
                 <h2>공지사항</h2>

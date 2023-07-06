@@ -5,6 +5,9 @@ import axios, {head} from 'axios';
 import styled from 'styled-components';
 const { kakao } = window;
 var polylines = [];
+var verColor = 'black';
+var transitImg = '';
+
 
 // var pos1 = new kakao.maps.LatLng(37.6044854, 126.8918506);  //sw
 // var pos2 = new kakao.maps.LatLng(37.5911303, 126.8799154);  //ne
@@ -17,7 +20,7 @@ var bounds = new kakao.maps.LatLngBounds(pos1, pos2);
 
 
 function Search_Box () {
-    const baseUrl = "http://localhost:8080/api/route/";
+    const baseUrl = "http://smu-navi.ap-northeast-2.elasticbeanstalk.com/api/route/";
     const [ways, setWays] = useState([0]);
     const transfer = [];
     let point = [{La: "", Ma: ""}];
@@ -42,7 +45,6 @@ function Search_Box () {
 
     const [showInfo, setShowInfo] = useState([false, false, false, false, false]);
 
-
     function getRandomColor() {
         return '#' + Math.floor(Math.random() * 16777215).toString(16);
     }
@@ -58,7 +60,7 @@ function Search_Box () {
     }
 
     async function getRoute() {
-        await axios.get("http://localhost:8080/api/route")
+        await axios.get("http://smu-navi.ap-northeast-2.elasticbeanstalk.com/api/route")
             .then((response) => {
                 for (let k = 0; k < response.data.length; k++) {
                     position[k] = {
@@ -127,6 +129,7 @@ function Search_Box () {
 
                 kakao.maps.event.addListener(marker, 'click', async function Click ()  {
                     // selectTitle = p.title;
+                    buttonColor(idx);
                     resetInfoState();
                     getRemove();
                     await axios
@@ -163,7 +166,7 @@ function Search_Box () {
                             }
                             newWays[0].subPathList.forEach(function(item1,i){
                                 point = []
-                                if(item1.transitType == "WALK"){
+                                if(item1.transitType === "WALK"){
                                     item1.stationList.forEach(function(item2,j){
                                         point[j] = {La: item2.gpsX, Ma: item2.gpsY}
                                     });
@@ -186,30 +189,23 @@ function Search_Box () {
                             });
 
                             for (let k = 0; k < preSubPathCnt; k++) {
-                                if(newWays[0].subPathList[k].transitType == "WALK"){
+                                var newColor = colorSelector(newWays[0].subPathList[k].transitType,newWays[0].subPathList[k].busType,newWays[0].subPathList[k].lineName)
+                                if(newWays[0].subPathList[k].transitType === "WALK"){
                                     polylines[k].setOptions({
-                                        strokeColor: 'black',
+                                        strokeColor: newColor,
                                         strokeStyle: 'dashed',
                                         strokeWeight: 2,
                                     });
                                 }
-                                else if(newWays[0].subPathList[k].transitType == "BUS"){
+                                else {
                                     polylines[k].setOptions({
-                                        strokeColor: '#0ABB0C',
-                                        strokeStyle: 'solid',
-                                        strokeWeight: 4,
-                                    });
-                                }
-                                else if(newWays[0].subPathList[k].transitType == "SUBWAY"){
-                                    polylines[k].setOptions({
-                                        strokeColor: '#FF7A00',
+                                        strokeColor: newColor,
                                         strokeStyle: 'solid',
                                         strokeWeight: 4,
                                     });
                                 }
                                 polylines[k].setMap(map);
                             }
-
                         })
                         .catch((error) => {
                             console.log(error);
@@ -261,7 +257,7 @@ function Search_Box () {
 
                 newWays[0].subPathList.forEach(function(item1,i){
                     point = []
-                    if(item1.transitType == "WALK"){
+                    if(item1.transitType === "WALK"){
                         item1.stationList.forEach(function(item2,j){
                             point[j] = {La: item2.gpsX, Ma: item2.gpsY}
                         });
@@ -284,23 +280,17 @@ function Search_Box () {
                 });
 
                 for (let k = 0; k < preSubPathCnt; k++) {
-                    if(newWays[0].subPathList[k].transitType == "WALK"){
+                    var newColor = colorSelector(newWays[0].subPathList[k].transitType,newWays[0].subPathList[k].busType,newWays[0].subPathList[k].lineName);
+                    if(newWays[0].subPathList[k].transitType === "WALK"){
                         polylines[k].setOptions({
-                            strokeColor: 'black',
+                            strokeColor: newColor,
                             strokeStyle: 'dashed',
                             strokeWeight: 2,
                         });
                     }
-                    else if(newWays[0].subPathList[k].transitType == "BUS"){
+                    else{
                         polylines[k].setOptions({
-                            strokeColor: '#0ABB0C',
-                            strokeStyle: 'solid',
-                            strokeWeight: 4,
-                        });
-                    }
-                    else if(newWays[0].subPathList[k].transitType == "SUBWAY"){
-                        polylines[k].setOptions({
-                            strokeColor: '#FF7A00',
+                            strokeColor: newColor,
                             strokeStyle: 'solid',
                             strokeWeight: 4,
                         });
@@ -326,10 +316,8 @@ function Search_Box () {
         for (var i = 0; i < ways[w].subPathList.length; i++) {
             transfer[i] = ways[w].subPathList[i];
             linePath = []
-            if(ways[w].subPathList[i].transitType == "WALK"){
-                // transfer[i].stationList.forEach(function(item,j){
-                //     linePath[i] = new kakao.maps.LatLng(item.gpsY, item.gpsX);
-                // });
+            var newColor = colorSelector(ways[w].subPathList[i].transitType,ways[w].subPathList[i].busType,ways[w].subPathList[i].lineName);
+            if(ways[w].subPathList[i].transitType === "WALK"){
                 transfer[i].stationList.map((item,idx) => {
                     linePath[idx] = new kakao.maps.LatLng(item.gpsY, item.gpsX);
                 })
@@ -339,23 +327,16 @@ function Search_Box () {
                     linePath[index] = new kakao.maps.LatLng(item.gpsY, item.gpsX);
                 })
             }
-            if(ways[w].subPathList[i].transitType == "WALK"){
+            if(ways[w].subPathList[i].transitType === "WALK"){
                 polylines[i].setOptions({
-                    strokeColor: 'black',
+                    strokeColor: newColor,
                     strokeStyle: 'dashed',
                     strokeWeight: 2,
                 });
             }
-            else if(ways[w].subPathList[i].transitType == "BUS"){
+            else{
                 polylines[i].setOptions({
-                    strokeColor: '#0ABB0C',
-                    strokeStyle: 'solid',
-                    strokeWeight: 4,
-                });
-            }
-            else if(ways[w].subPathList[i].transitType == "SUBWAY"){
-                polylines[i].setOptions({
-                    strokeColor: '#FF7A00',
+                    strokeColor: newColor,
                     strokeStyle: 'solid',
                     strokeWeight: 4,
                 });
@@ -407,14 +388,66 @@ function Search_Box () {
     //progressBar component 따로 생성, {이용수단 type, 이용시간, 환승횟수, 도보시간} 전달
     //map으로 환승할 때마다 그리게 해서 겹치게 만들기
     //환승회차에 따라 시간 비율 정해서 transform: translate로 x좌표 늘려주기.
-    
 
+
+    //교통수단 이미지 선택함수
+    function imgSelector(type, busType, lineName) {
+        if(type === 'WALK')
+            transitImg = 'WALK_COLOR';
+        else if(type === 'BUS'){
+            if(busType === '간선')
+                transitImg = 'busgan';
+            else if(busType === '지선')
+                transitImg = 'busji';
+            else if(busType === '마을버스')
+                transitImg = 'busma';
+        }
+        else if(type === 'SUBWAY'){
+            if(lineName === '1')
+                transitImg = 'sub1';
+            else if(lineName === '3')
+                transitImg = 'sub3';
+            else if(lineName === '4')
+                transitImg = 'sub4';
+            else if(lineName === '6')
+                transitImg = 'sub6';
+        }
+        return(transitImg)
+    }
+
+    //교통수단 색깔 선택함수
+    function colorSelector(type, busType, lineName){
+        if(type === 'WALK')
+            verColor = '#D9D9D9';
+        else if(type === 'BUS'){
+            if(busType === '간선')
+                verColor = '#1E7BDB';
+            else if(busType === '지선')
+                verColor ='#59BE0A';
+            else if(busType === '마을버스')
+                verColor = '#E43506';
+        }
+        else if(type === 'SUBWAY'){
+            if(lineName === '1')
+                verColor = '#0052A4';
+            else if(lineName === '3')
+                verColor = '#EF7C1C';
+            else if(lineName === '4')
+                verColor = '#00A5DE';
+            else if(lineName === '6')
+                verColor = '#CD7C2F';
+        }
+        return(verColor)
+    }
     function progress(index) {
+        var subPathCnt = ways[index].subPathCnt;
+        var time = ways[index].time;
+        console.log(subPathCnt)
         return(
             <div id = {"progress"}>
                 {transferName[index].map((obj, index3) => (
                     <span id={"wayProgress"} key={index3}>
-                        <span id={ways[index].subPathList[index3].transitType} style={{width:((obj.sectionTime/10*4 + 9)/ways[index].time*95)+"%" }}><span><img  id={"icon"} src={require(`../../img/${ways[index].subPathList[index3].transitType}.png`)} /></span><span id={"busdiv"}><p id={"min"}>{obj.sectionTime}분</p></span> </span>
+                        <span id= {'progressDetail'} style={{width:((obj.sectionTime/29*13 + (time-obj.sectionTime)%10 + (time-obj.sectionTime)/10 + subPathCnt/2 )/time*95)+"%" , backgroundColor: colorSelector(ways[index].subPathList[index3].transitType, ways[index].subPathList[index3].busType, ways[index].subPathList[index3].lineName)}}><span><img  id={"icon"} src={require(`../../img/${imgSelector(ways[index].subPathList[index3].transitType, ways[index].subPathList[index3].busType, ways[index].subPathList[index3].lineName )}.png`)} /></span><span id={"busdiv"}><p id={"min"}>{obj.sectionTime}분</p></span> </span>
                     </span>
                 ))}
             </div>
@@ -457,12 +490,19 @@ function Search_Box () {
                 <p id={"bestWay"}>최적 경로</p>
             )
     }
+    
+    function subwayInfo(index){
+        if(transferName[index][0].transitType === 'SUBWAY')
+            return(<span>호선</span>)
+        else if(transferName[index][0].transitType === 'WALK')
+            return(<span>도보</span>)
+    }
 
     function infoDetail(index) {
-        if(showInfo[index] == false) {
+        if(showInfo[index] === false) {
             return (
                 <>
-                    <div><span><img id={"detailIcon"} src={require(`../../img/${ways[index].subPathList[0].transitType}.png`)} /></span>{transferName[index][0].lineName}</div>
+                    <div id={'first'}><span><img id={"firstIcon"} src={require(`../../img/${ways[index].subPathList[0].transitType}.png`)} /></span><span id={'firstInfo'} style={{backgroundColor: colorSelector(ways[index].subPathList[0].transitType,ways[index].subPathList[0].busType,ways[index].subPathList[0].lineName)}}>{transferName[index][0].lineName}{subwayInfo(index)}</span> </div>
                     <div>하차 {transferName[index][0].to}</div>
                 </>
             )
@@ -473,44 +513,43 @@ function Search_Box () {
                     {transferName[index].map((obj, index2) => (
                         <div key={index2}>
                             <div id={"wayDetail"}>
-                                {/*<h6>출발 {selectTitle}</h6>*/}
-                                <h6>승차 {obj.from}</h6>
-                                <h6 id={"detailMin"}>{obj.sectionTime}분</h6>
+                                <p id={'takePoint'}>출발 {obj.from}</p>
                                 <div id={"infoDetail"}>
-                                    <span id={"ver"+obj.transitType}></span>
-                                    <span id={"icon_line"}><img  id={"detailIcon"} src={require(`../../img/${obj.transitType}.png`)} /></span>
-                                {lineName(index, index2)}
+                                    <h6 id={"detailMin"}>{obj.sectionTime}분</h6>
+                                    <span id={'verProgress'} style={{backgroundColor: colorSelector(obj.transitType, obj.busType, obj.lineName)}}></span>
+                                    <span id={"icon_line"}><img  id={"detailIcon"} src={require(`../../img/${imgSelector(obj.transitType, obj.busType, obj.lineName )}.png`)} /></span>
+                                    {lineName(index, index2)}
                                 </div>
-                                <h6>도착 {obj.to}</h6>
+                                <p id={'offPoint'}>도착 {obj.to}</p>
                             </div>
                         </div>
 
                     ))}
-                    <h6><img id={"flag"} src={require('../../img/flag.png')} /> 상명대 정문 </h6>
+                    <div id={'finalPoint'}><img id={"flag"} src={require('../../img/flag.png')} /> 상명대 정문 </div>
                 </>
             )
         }
     }
 
     function lineName(index1, index2) {
-        if(transferName[index1][index2].transitType == "SUBWAY"){
+        if(transferName[index1][index2].transitType === "SUBWAY"){
             return(
-                <span>{transferName[index1][index2].lineName}호선</span>
+                <span id={'typeDetail'}>{transferName[index1][index2].lineName}호선</span>
             )
-        }else if(transferName[index1][index2].transitType == "BUS"){
+        }else if(transferName[index1][index2].transitType === "BUS"){
             return(
-                <span>{transferName[index1][index2].lineName}번</span>
+                <span id={'typeDetail'}>{transferName[index1][index2].lineName}번</span>
             )
         }
-        if(transferName[index1][index2].transitType == "WALK"){
+        if(transferName[index1][index2].transitType === "WALK"){
             return(
-                <span>도보</span>
+                <span id={'typeDetail'}>도보</span>
             )
         }
     }
 
     function showInfoDetail(index) {
-        if(showInfo[index] == false) {
+        if(showInfo[index] === false) {
             return(
                 <>
                     <p id={"showInfo"} onClick={e => changeInfoState(e, index)}>상세보기</p>
@@ -529,7 +568,7 @@ function Search_Box () {
     }
 
     function changeInfoState(e, index){
-        if(showInfo[index] == false)
+        if(showInfo[index] === false)
             var newShowInfo = showInfo.map((item , idx) =>
                 idx === index ? true : item,
             );
@@ -542,7 +581,7 @@ function Search_Box () {
     console.log(ways)
 
     return(
-        <div>
+        <div style={{height: '0px'}}>
             <div className={"search-wrapper"}>
                 <div id={"Search_box_title"}><p>상세경로</p></div>
                 {Info()}

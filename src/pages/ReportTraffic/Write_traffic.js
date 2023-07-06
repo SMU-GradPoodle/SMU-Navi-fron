@@ -7,7 +7,7 @@ import Catebory_btn from '../../component/Category_btn/Catebory_btn';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import Line from '../../component/Line/Line.js'
 function Write_traffic(){
     const [button, setButton] = useState([0]);
 
@@ -141,6 +141,7 @@ function Write_traffic(){
     return(
         <div>
             <MainLogo />
+            <Line/>
             <MenuBar />
             <div className={"Report_big_wrap"}>
                 <h2>제보하기</h2>

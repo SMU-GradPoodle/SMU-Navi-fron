@@ -31,16 +31,26 @@ const TrafficInfo = ({traffic_data}) => {   //traffic_data = 받아 올 시위 �
     }, []);
 
     console.log(info[0].station)
+
+    function isTraffic(){
+        if(info != null){
+            return(
+                <>
+                    {info.map((item, index) => (
+                        <div key={index}>
+                            <h5 id={"infoData"}>{station[index].stationName}에서 {item.kind} 발생</h5>
+                        </div>
+                    ))}
+                </>
+            )
+        }
+    }
         return (
        <div>
            <div id={"traffic"}>
                <span><img id={"pngwing"} src={pngwing} /></span>
-               <h4 id={"traffic_title"}>교통정보</h4>
-               {info.map((item, index) => (
-                   <div key={index}>
-                   <h5 id={"infoData"}>{station[index].stationName}에서 {item.kind} 발생</h5>
-                   </div>
-               ))}
+               <h5 id={"traffic_title"}>교통정보</h5>
+
            </div>
 
        </div>
