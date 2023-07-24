@@ -3,7 +3,7 @@ import MainLogo from '../../component/MainLogo/Main_Logo';
 import MenuBar from '../../component/MenuBar/MenuBar';
 import Line from '../../component/Line/Line';
 import walk from '../../img/walk.png';
-import bus from '../../img/bus.png';
+import bus from '../../img/busIcon.png';
 function TakeTaxi(){
     return(
         <div>

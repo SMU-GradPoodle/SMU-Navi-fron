@@ -479,7 +479,7 @@ function Search_Box () {
     function isTraffic(index) {
         if(ways[index].accidents != 0){
             return(
-                <p id={"isTraffic"}>{ways[index].accidents[0].station.stationName} {ways[index].accidents[0].kind} 발생</p>
+                <p id={"isTraffic"}>{ways[index].accidents[0].station.stationName} {ways[index].accidents[0].kind}</p>
             )
         }
     }
