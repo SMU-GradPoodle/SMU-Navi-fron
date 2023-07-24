@@ -18,6 +18,7 @@ const Map_Main = ({linePath}) => {
         <div className={"Main_wrap"}>
             <MainLogo className={"mainlogo"}/>
             <Line/>
+            <MenuBar/>
             <TrafficInfo />
             <div id='map' ></div>
             <SearchBox />
