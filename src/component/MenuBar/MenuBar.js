@@ -1,50 +1,29 @@
-import './MenuBar.css';
 import React from 'react';
-import { useState, useEffect} from 'react';
-import {Link} from 'react-router-dom';
+import './MenuBar.css';
+import { Link } from 'react-router-dom';
 
-function MenuBar(){
-
-    const [isTrafficClicked, setIsTrafficClicked] = useState('');
-    const [isTaxiClicked, setIsTaxiClicked] = useState('');
-    const [isNoticeClicked, setIsNoticeClicked] = useState('');
-
-    function onClickReport(){
-        setIsTrafficClicked('click');
-    }
-
-    function onClickTaxi(){
-        setIsTaxiClicked('click');
-    }
-
-    function onClickNotice(){
-        setIsNoticeClicked('click');
-    }
-
-
-
-    return(
-        <div className={"MenuBarWrap"}>
-            <div className={"MenuBarLineWrap"}>
-                <p className={"BarMenu"}>Menu</p>
-            </div>
-            <div className={"MenuBarLineWrap"}>
-                <Link to={'/'} id={isTrafficClicked} onClick={onClickReport} style={{textDecoration: 'none', color: 'black'}}>
-                    <p className={"BarTraffic"}>대중교통 지도</p>
-                </Link>
-            </div>
-            <div className={"MenuBarLineWrap"}>
-                <Link to={'/report_traffic'} id={isTrafficClicked} onClick={onClickReport} style={{textDecoration: 'none', color: 'black'}}>
-                    <p className={"BarTraffic"}>교통 제보하기</p>
-                </Link>
-            </div>
-            <div className={"MenuBarLineWrap"}>
-                <Link to={'/take_taxi'} id={isTaxiClicked} onClick={onClickTaxi} style={{textDecoration: 'none', color: 'black'}}>
-                    <p className={"BarTaxi"}>택시 같이 타기</p>
-                </Link>
-            </div>
-        </div>
-    )
+function MenuBar() {
+    return (
+        <nav className="navigation-bar">
+            <ul className="navigation-menu">
+                <li>
+                    <Link to="/" className="navigation-link">
+                        대중교통지도
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/report_traffic" className="navigation-link">
+                        교통제보하기
+                    </Link>
+                </li>
+                <li>
+                    <Link to="/take_taxi" className="navigation-link">
+                        꿀팁 보러가기
+                    </Link>
+                </li>
+            </ul>
+        </nav>
+    );
 }
 
 export default MenuBar;
