@@ -64,11 +64,11 @@ function Search_Box () {
             .then((response) => {
                 for (let k = 0; k < response.data.length; k++) {
                     position[k] = {
-                        Id: response.data[k].startStationId,
-                        title : response.data[k].startStationName,
-                        x: response.data[k].x,
-                        y: response.data[k].y,
-                        latlng: new kakao.maps.LatLng(response.data[k].y, response.data[k].x),
+                        Id: response.data[k].id,
+                        title : response.data[k].placeName,
+                        x: response.data[k].gpsX,
+                        y: response.data[k].gpxY,
+                        latlng: new kakao.maps.LatLng(response.data[k].gpsY, response.data[k].gpsX),
                     };
                     // setposition(position);
                 }
@@ -593,6 +593,7 @@ function Search_Box () {
                     </div>
                 ))}
             </div>
+
         </div>
     )
 }
