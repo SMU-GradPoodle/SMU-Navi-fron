@@ -23,7 +23,7 @@ function ReportTraffic(){
         async function fetchData(){
             const result = await axios({
                 method: 'get',
-                url: 'http://localhost:8080/api/info',
+                url: 'http://smu-navi.ap-northeast-2.elasticbeanstalk.com/api/info',
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -38,30 +38,7 @@ function ReportTraffic(){
         }
         fetchData();
     },[]);
-
-
-    // useEffect( () => {
-    //     const loadData = async () => {
-    //         axios({
-    //             method: 'get',
-    //             url: 'http://localhost:8080/api/info',
-    //             headers: {
-    //                 "Content-Type": "application/json"
-    //             },
-    //         }).then((res) => {
-    //             var data = res.data.data;
-    //             var count = res.data.count;
-    //             setContentCount(count);
-    //             setContent(data);
-    //         }).catch((error) => {
-    //             alert("글을 확인할 수 없습니다. 관리자에게 문의하세요.");
-    //         });
-    //     };
-    //
-    //     // then call it here
-    //     loadData();
-    //
-    // }, [])
+    
 
     function onMoveWriteReport(){
         navigate('/write_traffic');
@@ -72,7 +49,7 @@ function ReportTraffic(){
     }
 
     function onMoveTrafficList(){
-        navigate('/traffic_list');
+        navigate('/list_traffic');
     }
 
     function toPrev(){

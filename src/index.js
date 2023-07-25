@@ -14,6 +14,7 @@ import Mypage from "./pages/Mypage/Mypage";
 import CheckDemon from "./pages/CheckDemon/CheckDemon";
 
 import ReportTraffic from "./pages/ReportTraffic/ReportTraffic";
+import TrafficList from "./pages/ReportTraffic/TrafficList";
 import Write_ReportTraffic from "./pages/ReportTraffic/Write_traffic";
 import Detail_traffic from "./pages/ReportTraffic/Detail_traffic";
 
@@ -43,6 +44,7 @@ root.render(
             <Route path="/check_demon" element={<CheckDemon />}></Route>
 
             <Route path="/report_traffic" element={<ReportTraffic />}></Route>
+            <Route path="/list_traffic" element={<TrafficList />}></Route>
             <Route path="/write_traffic" element={<Write_ReportTraffic />}></Route>
             <Route path="/detail_traffic/:id" element={<Detail_traffic />}></Route>
 
