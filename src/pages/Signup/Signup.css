@@ -15,6 +15,7 @@ p{
     align-items: center;
     flex-direction: column;
     padding: 0;
+    width: 100vw;
 }
 .signupWrapMainLogo{
     width: 170px;
@@ -30,6 +31,14 @@ p{
     flex-direction: column;
     justify-content: center;
     margin-bottom: 30px;
+}
+
+.MobileSignupBox{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 30px;
+    width: 100vw;
 }
 
 .signupInputName{

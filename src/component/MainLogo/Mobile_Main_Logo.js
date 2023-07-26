@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import listBt from './../../img/hamburger.svg';
 import clickedHam from './../../img/clickedHam.svg';
 import logo from './../../img/mobileLogo.svg';
+import { useNavigate } from 'react-router-dom';
 import profile from './../../img/profile.svg';
 
 const Container = styled.div`
@@ -64,8 +65,11 @@ const NavLine = styled.div`
 `;
 
 const Mobile_Main_Logo = () => {
+    const navigate = useNavigate();
     const [isNavOpen, setIsNavOpen] = useState(false);
-
+    const onLogin = (e) => {
+        navigate('/login');
+    }
     const handleListImageClick = () => {
         setIsNavOpen((prev) => !prev);
     };
@@ -81,7 +85,7 @@ const Mobile_Main_Logo = () => {
                 onClick={handleListImageClick}
             />
             <LogoImage src={logo} onClick={handleLogoClick} />
-            <ProfileImage src={profile} />
+            <ProfileImage src={profile} onClick={onLogin}/>
             {/* 스르륵 열리는 내비게이션 바 */}
             <NavContainer isOpen={isNavOpen}>
                 <NavLink>시위 확인하기</NavLink>
@@ -89,6 +93,8 @@ const Mobile_Main_Logo = () => {
                 <NavLink>교통 제보하기</NavLink>
                 <NavLine></NavLine>
                 <NavLink>꿀팁 확인하기</NavLink>
+                <NavLine></NavLine>
+                <NavLink>CCTV 확인하기</NavLink>
             </NavContainer>
         </Container>
     );

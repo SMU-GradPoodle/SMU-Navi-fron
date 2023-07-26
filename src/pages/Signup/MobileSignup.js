@@ -23,7 +23,6 @@ function MobileSignup(){
             <h2 className={"singupTitle"}>회원가입</h2>
             <div className={"MobileSignupInputWrap"}>
                 <SignupInput />
-                <Footer />
             </div>
         </div>
     )
