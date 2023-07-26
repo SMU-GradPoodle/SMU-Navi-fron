@@ -1,7 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { CookieProvider } from "react-cookie";
+import ReactDOM from 'react-dom'; // Move this import to the top
+import { useMediaQuery } from 'react-responsive';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { CookieProvider } from 'react-cookie';
 import './index.css';
 
 //member page
@@ -27,39 +28,71 @@ import Notice from "./pages/Notice/Notice";
 import Write_Notice from './pages/Notice/Write_notice';
 import Detail_Notice from './pages/Notice/Detail_notice';
 
+//mobile pages
+import MobileMain from './pages/MapMain/MobileMain';
+import MobileLogin from './pages/Login/MobileLogin';
+import MobileSignup from './pages/Signup/MobileSignup';
 //map page
 import MapMain from "./pages/MapMain/Map_Main";
 document.cookie = "crossCookie=bar; SameSite=None; Secure";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+export const Mobile = ({children}) => {
+    const isMobile = useMediaQuery({
+        query : "(max-width:768px)"
+    });
+
+    return <>{isMobile && children}</>
+}
+
+export const PC = ({children}) => {
+    const isPc = useMediaQuery({
+        query : "(min-width:769px)"
+    });
+
+    return <>{isPc && children}</>
+}
 root.render(
-    <Router>
-        <Routes>
-            <Route path="/login" element={<Login />}></Route>
-            <Route path="/signup" element={<Signup />}></Route>
-            <Route path="/findpw" element={<FindPw />}></Route>
-            <Route path="/mypage" element={<Mypage />}></Route>
+    <>
+        <Mobile>
+            <Router>
+                <Routes>
+                    <Route path="/main" element={<MobileMain />}></Route>
+                    <Route path="/login" element={<MobileLogin />}></Route>
+                    <Route path="/signup" element={<MobileSignup />}></Route>
+                    <Route path="/" element={<MapMain />}></Route>
+                </Routes>
+            </Router>
+        </Mobile>
+        <PC>
+            <Router>
+                <Routes>
+                    <Route path="/login" element={<Login />}></Route>
+                    <Route path="/signup" element={<Signup />}></Route>
+                    <Route path="/findpw" element={<FindPw />}></Route>
+                    <Route path="/mypage" element={<Mypage />}></Route>
 
-            <Route path="/" element={<MapMain />}></Route>
+                    <Route path="/" element={<MapMain />}></Route>
 
-            <Route path="/check_demon" element={<CheckDemon />}></Route>
+                    <Route path="/check_demon" element={<CheckDemon />}></Route>
 
-            <Route path="/report_traffic" element={<ReportTraffic />}></Route>
-            <Route path="/list_traffic" element={<TrafficList />}></Route>
-            <Route path="/write_traffic" element={<Write_ReportTraffic />}></Route>
-            <Route path="/detail_traffic/:id" element={<Detail_traffic />}></Route>
+                    <Route path="/report_traffic" element={<ReportTraffic />}></Route>
+                    <Route path="/list_traffic" element={<TrafficList />}></Route>
+                    <Route path="/write_traffic" element={<Write_ReportTraffic />}></Route>
+                    <Route path="/detail_traffic/:id" element={<Detail_traffic />}></Route>
 
-            <Route path="/take_taxi" element={<TakeTaxi />}></Route>
-            <Route path="/write_takeTaxi" element={<Write_TakeTaxi />}></Route>
+                    <Route path="/take_taxi" element={<TakeTaxi />}></Route>
+                    <Route path="/write_takeTaxi" element={<Write_TakeTaxi />}></Route>
 
-            {/*공지사항*/}
-            {/*<Route path="/notice" element={<Notice />}></Route>*/}
-            <Route path="/write_notice" element={<Write_Notice />}></Route>
-            <Route path="/detail_notice/:id" element={<Detail_Notice />}></Route>
+                    <Route path="/write_notice" element={<Write_Notice />}></Route>
+                    <Route path="/detail_notice/:id" element={<Detail_Notice />}></Route>
 
-            <Route path="/CCTV" element={<CCTV />}></Route>
+                    <Route path="/CCTV" element={<CCTV />}></Route>
 
-        </Routes>
-    </Router>
+                </Routes>
+            </Router>
+        </PC>
+    </>
 );
 
