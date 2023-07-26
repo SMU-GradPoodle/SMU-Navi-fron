@@ -40,7 +40,7 @@ const TrafficInfo = ({traffic_data}) => {   //traffic_data = 받아 올 시위 �
                     <div id={'infoWrapper'} >
                         {info.map((item, index) => (
                             <div key={index}>
-                                <h5 id={"infoData"}>{station[index].stationName}에서 {item.kind}</h5>
+                                <h5 id={"infoData"}>{item.kind}</h5>
                             </div>
                         ))}
                     </div>

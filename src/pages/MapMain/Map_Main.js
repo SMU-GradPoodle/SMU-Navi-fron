@@ -1,21 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import MainLogo from '../../component/MainLogo/Main_Logo';
-import Map from "../../component/Map/Map.js";
+import M_Main_Logo from '../../component/MainLogo/M_Main_Logo';
 import SearchBox from '../../component/SearchBox/Search_Box';
+import M_Search_Box from "../../component/SearchBox/M_Search_Box";
 import './Map_Main.css';
 import Line from '../../component/Line/Line';
-// import Search from '../../component/SearchPlaces/Search';
-import axios from 'axios';
-// import Address from '../../component/SearchPlaces/Address';
-import {useLocation} from "react-router-dom";
 import Footer from "../../component/Footer/Footer";
 import MenuBar from "../../component/MenuBar/MenuBar";
 import TrafficInfo from "../../component/TrafficInfo/TrafficInfo";
+import {MEDIA_QUERIES, Wrapper} from "../../component/MEDIA_QUERIES/MEDIA_QUERIES";
+import Media from "react-media";
 const Map_Main = ({linePath}) => {
 
-    return (
-        <div className={"Main_wrap"}>
+    const PcMode = () => (
+        <>
             <MainLogo className={"mainlogo"}/>
             <Line/>
             <MenuBar/>
@@ -23,6 +21,34 @@ const Map_Main = ({linePath}) => {
             <div id='map' ></div>
             <SearchBox />
             <Footer />
+
+        </>
+    )
+
+
+    const MobileMode = () => (
+        <>
+            <Wrapper>
+                <M_Main_Logo className={"mainlogo"}/>
+                <M_Search_Box />
+
+            </Wrapper>
+        </>
+    )
+
+
+    return (
+        <div className={"Main_wrap"}>
+            <Media queries={MEDIA_QUERIES}>
+                {matches => {
+                    return(
+                        <>
+                            {matches.pc && <PcMode />}
+                            {matches.mobile && <MobileMode />}
+                        </>
+                    )
+                }}
+            </Media>
         </div>
     );
 }
