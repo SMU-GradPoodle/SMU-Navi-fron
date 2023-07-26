@@ -21,6 +21,7 @@ import Detail_traffic from "./pages/ReportTraffic/Detail_traffic";
 import TakeTaxi from "./pages/TakeTaxi/TakeTaxi";
 import Write_TakeTaxi from './pages/TakeTaxi/Write_TakeTaxi';
 
+import CCTV from './pages/CCTV/CCTV';
 
 import Notice from "./pages/Notice/Notice";
 import Write_Notice from './pages/Notice/Write_notice';
@@ -55,6 +56,8 @@ root.render(
             {/*<Route path="/notice" element={<Notice />}></Route>*/}
             <Route path="/write_notice" element={<Write_Notice />}></Route>
             <Route path="/detail_notice/:id" element={<Detail_Notice />}></Route>
+
+            <Route path="/CCTV" element={<CCTV />}></Route>
 
         </Routes>
     </Router>
